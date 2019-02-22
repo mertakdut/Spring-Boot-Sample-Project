@@ -11,18 +11,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.demo.application.model.Contact;
-import com.demo.application.service.ContactRepository;
-import com.demo.application.service.FileReader;
+import com.demo.application.service.IUserService;
 
 @Controller
 @RequestMapping("/")
 public class HomeController {
 
-	@Autowired
-	FileReader fileReader;
+	// @Autowired
+	// private ContactRepository contactRepository;
 
 	@Autowired
-	private ContactRepository contactRepository;
+	private IUserService userService;
 
 	@GetMapping
 	public String home(Locale locale, Model model) {
@@ -33,16 +32,17 @@ public class HomeController {
 		String formattedDate = dateFormat.format(date);
 
 		model.addAttribute("serverTime", formattedDate);
-		model.addAttribute("fileContents", fileReader.getFileContents());
-		model.addAttribute("contactList", contactRepository.list());
-		model.addAttribute("myContact", contactRepository.get(28));
+		// model.addAttribute("fileContents", fileReader.getFileContents());
+		// model.addAttribute("contactList", contactRepository.list());
+		// model.addAttribute("myContact", contactRepository.get(28));
+		model.addAttribute("myContact", userService.getUser());
 
 		Contact contact = new Contact();
 		contact.setAddress("adres");
 		contact.setName(formattedDate);
 		contact.setEmail("emayýl");
 		contact.setTelephone("05336867023");
-		contactRepository.save(contact);
+		// contactRepository.save(contact);
 
 		return "home";
 	}

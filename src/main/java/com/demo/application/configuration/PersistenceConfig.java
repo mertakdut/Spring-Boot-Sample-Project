@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "net.petrikainulainen.spring.testmvc.todo.repository")
-public class PersistenceConfiguration {
+@EnableJpaRepositories(basePackages = "com.demo.application.service")
+public class PersistenceConfig {
 
 	protected static final String PROPERTY_NAME_DATABASE_DRIVER = "db.driver";
 	protected static final String PROPERTY_NAME_DATABASE_URL = "db.url";

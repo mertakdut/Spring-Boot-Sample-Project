@@ -1,18 +1,15 @@
-package com.demo.application.configuration;
+package com.demo.application.config;
 
+import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+import com.demo.application.service.IUserService;
+
 @Configuration
-@ComponentScan(basePackages = { "com.demo.application.service" })
-@Import({ WebAppConfiguration.class, PersistenceConfiguration.class })
-@PropertySource("classpath:application.properties")
-public class MainConfiguration {
+public class TestContext {
 
 	private static final String MESSAGE_SOURCE_BASE_NAME = "i18n/messages";
 
@@ -24,5 +21,10 @@ public class MainConfiguration {
 		messageSource.setUseCodeAsDefaultMessage(true);
 
 		return messageSource;
+	}
+
+	@Bean
+	public IUserService todoService() {
+		return Mockito.mock(IUserService.class);
 	}
 }

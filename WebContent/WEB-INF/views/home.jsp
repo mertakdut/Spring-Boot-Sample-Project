@@ -23,8 +23,9 @@
 			</tr>
 		</c:forEach>
 	</table>
-	
-	<p>${myContact.name} ${myContact.telephone} ${myContact.email}</p>
+
+	<%-- 	<p>${myContact.name} ${myContact.telephone} ${myContact.email}</p> --%>
+	<p>${myContact}</p>
 
 	<form action="user/get" method="post">
 		<input type="text" name="username"><br /> <input

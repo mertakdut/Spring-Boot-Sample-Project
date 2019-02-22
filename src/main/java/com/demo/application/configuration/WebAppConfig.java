@@ -19,10 +19,10 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan(basePackages = {
         "com.demo.application.controller" // TODO: I might want to seperate controller packages in the future.
 })
-public class WebAppConfiguration implements WebMvcConfigurer {
+public class WebAppConfig implements WebMvcConfigurer {
 
-    private static final String VIEW_RESOLVER_PREFIX = "/WEB-INF/views/";
-    private static final String VIEW_RESOLVER_SUFFIX = ".jsp";
+    public static final String VIEW_RESOLVER_PREFIX = "/WEB-INF/views/";
+    public static final String VIEW_RESOLVER_SUFFIX = ".jsp";
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -40,7 +40,7 @@ public class WebAppConfiguration implements WebMvcConfigurer {
 
         Properties exceptionMappings = new Properties();
 
-        exceptionMappings.put("net.petrikainulainen.spring.testmvc.todo.exception.TodoNotFoundException", "error/404");
+        exceptionMappings.put("com.demo.application.exception.UserNotFoundException", "error/404");
         exceptionMappings.put("java.lang.Exception", "error/error");
         exceptionMappings.put("java.lang.RuntimeException", "error/error");
 
