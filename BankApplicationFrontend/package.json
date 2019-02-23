@@ -1,0 +1,41 @@
+{
+    "name": "bank-application-frontend",
+    "version": "0.1.0",
+    "description": "Demo Bank Application",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:mertakdut/DemoWebApplication.git"
+    },
+    "author": "Mert Akdut",
+    "bugs": {
+        "url": "https://github.com/mertakdut/DemoWebApplication/issues"
+    },
+    "homepage": "https://github.com/mertakdut/DemoWebApplication",
+    "scripts": {
+        "start": "webpack-dev-server --open --mode development",
+        "build": "webpack --mode production"
+    },
+    "dependencies": {
+        "axios": "^0.18.0",
+        "bootstrap": "^4.3.1",
+        "react": "^16.5.2",
+        "react-bootstrap": "^1.0.0-beta.5",
+        "react-dom": "^16.5.2",
+        "react-router-dom": "^4.3.1",
+        "rest": "^1.3.1"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.1.0",
+        "@babel/preset-env": "^7.1.0",
+        "@babel/preset-react": "^7.0.0",
+        "babel-loader": "^8.0.2",
+        "css-loader": "^2.1.0",
+        "html-loader": "^0.5.5",
+        "html-webpack-plugin": "^3.2.0",
+        "style-loader": "^0.23.1",
+        "webpack": "^4.29.5",
+        "webpack-cli": "^3.2.3",
+        "webpack-dev-server": "^3.2.0"
+    }
+}

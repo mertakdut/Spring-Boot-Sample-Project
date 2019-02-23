@@ -6,7 +6,7 @@ class NavBarTop extends React.Component {
     render() {
         return (
             <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="#home">Demo Bank</Navbar.Brand>
+                <Navbar.Brand href="/">Demo Bank</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ml-auto">

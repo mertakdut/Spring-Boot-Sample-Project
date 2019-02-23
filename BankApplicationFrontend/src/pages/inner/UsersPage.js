@@ -1,5 +1,5 @@
 import React from 'react';
-const client = require('../../services/client');
+import axios from 'axios';
 import { Table, Button } from 'react-bootstrap'
 
 class UsersPage extends React.Component {
@@ -10,8 +10,9 @@ class UsersPage extends React.Component {
 	}
 
 	componentDidMount() {
-		client({method: 'GET', path: '/api/users'}).done(response => {
-			this.setState({users: response.entity._embedded.users});
+		axios.get('http://localhost:8080/api/users').then(response => {
+            console.log(response);
+            this.setState({users: response.data._embedded.users});
 		});
 	}
 
@@ -51,7 +52,7 @@ class User extends React.Component{
 	render() {
 		return (
 			<tr>
-				<td>{this.props.index}</td>
+				<td>{this.props.index + 1}</td>
 				<td>{this.props.user.username}</td>
 				<td>{this.props.user.tcno}</td>
 			</tr>
