@@ -1,4 +1,4 @@
-package com.demo.BankApplication.model;
+package com.demo.bankapp.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
