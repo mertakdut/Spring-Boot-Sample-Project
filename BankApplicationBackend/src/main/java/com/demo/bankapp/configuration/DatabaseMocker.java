@@ -7,10 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import com.demo.bankapp.model.User;
 import com.demo.bankapp.repository.UserRepository;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Configuration
-@Slf4j
 class DatabaseMocker {
 
 	@Bean
