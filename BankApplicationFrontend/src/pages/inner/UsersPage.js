@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Table, Button } from 'react-bootstrap'
 
-import { apiBaseUrl } from '../../services/client';
+import apiConfig from '../../services/client';
 
 class UsersPage extends React.Component {
 
@@ -12,7 +12,7 @@ class UsersPage extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(apiBaseUrl + 'users').then(response => {
+        axios.get(apiConfig.apiBaseUrl + 'users').then(response => {
             console.log(response);
             this.setState({ users: response.data._embedded.users });
         });

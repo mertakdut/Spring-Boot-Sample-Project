@@ -4,7 +4,7 @@ import FormElement from '../../components/FormElement'
 import axios from 'axios';
 import PopupDialog from '../../components/PopupDialog';
 
-import { apiBaseUrl } from '../../services/client';
+import apiConfig from '../../services/client';
 
 class RegisterPage extends React.Component {
 
@@ -72,7 +72,7 @@ class RegisterPage extends React.Component {
         } else if (this.state.tcno.length != 11) {
             this.setState({ isShowingPopup: true, popupTitle: 'Warning', popupMessage: 'Length of TC No must be 11. Currently it is: ' + this.state.tcno.length });
         } else {
-            axios.post(apiBaseUrl + 'users', {
+            axios.post(apiConfig.apiBaseUrl + 'users', {
                 username: this.state.username,
                 password: this.state.firstPass,
                 tcno: this.state.tcno

@@ -1,23 +1,31 @@
 import React from 'react';
-import { Navbar, Nav } from 'react-bootstrap'
+import { Navbar, Nav, NavItem } from 'react-bootstrap'
+import { Link } from 'react-router-dom';
 
 class NavBarTop extends React.Component {
-    
+
     render() {
+
+        let navbarStyling = {
+            padding: '15px',
+            display: 'inlineBlock',
+            lineHeight: '20px'
+        };
+
         return (
-            <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="/">Demo Bank</Navbar.Brand>
+            <Navbar bg="light" expand="lg" >
+                <Navbar.Brand><Link to="/">Demo Bank</Link></Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link href="/users">Users</Nav.Link>
-                        <Nav.Link href="/currency">Currency</Nav.Link>
-                        <Nav.Link href="/transfer">Transfer</Nav.Link>
-                        <Nav.Link href="/history">Transaction History</Nav.Link>
+                        <NavItem style={navbarStyling} componentclass="span"><Link to="/users">Users</Link></NavItem>
+                        <NavItem style={navbarStyling} componentclass="span"><Link to="/currency">Currency</Link></NavItem>
+                        <NavItem style={navbarStyling} componentclass="span"><Link to="/transfer">Transfer</Link></NavItem>
+                        <NavItem style={navbarStyling} componentclass="span"><Link to="/history">Transaction History</Link></NavItem>
                     </Nav>
                     <Nav className="ml-auto">
-                        <Nav.Link href="/register">Register</Nav.Link>
-                        <Nav.Link href="/login">Login</Nav.Link>
+                        <NavItem style={navbarStyling} componentclass="span"><Link to="/register">Register</Link></NavItem>
+                        <NavItem style={navbarStyling} componentclass="span"><Link to="/login">Login</Link></NavItem>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
