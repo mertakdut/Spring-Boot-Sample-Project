@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
+import com.demo.bankapp.exception.BadCredentialsException;
 import com.demo.bankapp.exception.UserNotFoundException;
 import com.demo.bankapp.model.User;
 import com.demo.bankapp.repository.UserRepository;
+import com.demo.bankapp.request.CreateNewUserRequest;
+import com.demo.bankapp.request.LoginRequest;
 import com.demo.bankapp.service.abstractions.IUserService;
 
 @Service
@@ -24,8 +26,27 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public User findById(@PathVariable Long id) throws UserNotFoundException {
-		return repository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+	public User addNewUser(CreateNewUserRequest request) {
+		// TODO: Mapper.
+		User user = new User(request.getUsername(), request.getPassword(), request.getTcno());
+		return repository.save(user);
+	}
+
+	@Override
+	public User login(LoginRequest request) throws UserNotFoundException {
+
+		User user = repository.findByUsername(request.getUsername());
+
+		if (user == null)
+			throw new UserNotFoundException(request.getUsername());
+
+		// TODO: Encoding.
+		// TODO: Stop timing attacks.
+		if (user.getPassword() == null || !user.getPassword().equals(request.getPassword())) {
+			throw new BadCredentialsException();
+		}
+
+		return user;
 	}
 
 }

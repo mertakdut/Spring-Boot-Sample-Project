@@ -2,9 +2,14 @@ import React from 'react';
 import { Form, Button } from 'react-bootstrap'
 import FormElement from '../../components/FormElement'
 import axios from 'axios';
+import apiConfig from '../../config/client';
+
 import PopupDialog from '../../components/PopupDialog';
 
-import apiConfig from '../../services/client';
+const ERROR_ALLFIELDSMANDATORY = 'All fields are mandatory.';
+const ERROR_DIFFPASS = 'Password fields should be same.';
+const ERROR_TCNOLENGTH = 'Length of TC No must be 11. Currently it is: ';
+const SUCCESS_REGISTER = 'User is registered successfully.';
 
 class RegisterPage extends React.Component {
 
@@ -18,7 +23,7 @@ class RegisterPage extends React.Component {
             secondPass: '',
             isShowingPopup: false,
             popupMessage: '',
-            popupTitle: ''
+            isProcessingRegister: false
         };
 
         this.handleClick = this.handleClick.bind(this);
@@ -56,34 +61,40 @@ class RegisterPage extends React.Component {
     }
 
     onPopupClosed(result) {
-        console.log(result);
+        console.log("dialog result: " + result);
         this.setState({
             isShowingPopup: false
         });
     }
 
-    handleClick(e) {
-        console.log(this.state.username);
+    handleClick() {
+
+        this.setState({
+            isProcessingRegister: true
+        });
 
         if (this.state.firstPass != this.state.secondPass) {
-            this.setState({ isShowingPopup: true, popupTitle: 'Warning', popupMessage: 'Password fields should be same.' });
+            this.setState({ isShowingPopup: true, popupTitle: 1, popupMessage: ERROR_DIFFPASS });
         } else if (this.state.username == '' || this.tcno == '' || this.state.firstPass == '') {
-            this.setState({ isShowingPopup: true, popupTitle: 'Warning', popupMessage: 'All fields are mandatory.' });
+            this.setState({ isShowingPopup: true, popupTitle: 1, popupMessage: ERROR_ALLFIELDSMANDATORY });
         } else if (this.state.tcno.length != 11) {
-            this.setState({ isShowingPopup: true, popupTitle: 'Warning', popupMessage: 'Length of TC No must be 11. Currently it is: ' + this.state.tcno.length });
+            this.setState({ isShowingPopup: true, popupTitle: 1, popupMessage: ERROR_TCNOLENGTH + this.state.tcno.length });
         } else {
-            axios.post(apiConfig.apiBaseUrl + 'users', {
+            axios.post(apiConfig.apiBaseUrl + 'user/new', {
                 username: this.state.username,
                 password: this.state.firstPass,
                 tcno: this.state.tcno
             }).then((response) => {
                 console.log(response);
-                this.setState({ isShowingPopup: true, popupTitle: 'Success', popupMessage: 'User is registered successfully.' });
+                this.setState({ isShowingPopup: true, popupTitle: 2, popupMessage: SUCCESS_REGISTER });
             }).catch((error) => {
-                console.log(error);
-                this.setState({ isShowingPopup: true, popupTitle: 'Error', popupMessage: error.message });
+                console.log(error.response);
+                this.setState({ isShowingPopup: true, popupTitle: 0, popupMessage: error.response.data.message });
             }).finally(() => {
                 this.resetFields();
+                this.setState({
+                    isProcessingRegister: false
+                })
             });
         }
     }
@@ -104,7 +115,7 @@ class RegisterPage extends React.Component {
                 <FormElement controlId={"formTcNo"} label={"TC No"} type={"text"} onChange={this.handleTcNoChange} value={this.state.tcno} />
                 <FormElement controlId={"formPassword"} label={"Password"} type={"password"} onChange={this.handleFirstPasswordChange} value={this.state.firstPass} />
                 <FormElement controlId={"formSecondPassword"} label={"Retype Password"} type={"password"} onChange={this.handleSecondPasswordChange} value={this.state.secondPass} />
-                <Button variant="primary" onClick={this.handleClick}>
+                <Button variant="primary" onClick={this.handleClick} disabled={this.state.isProcessingRegister}>
                     Submit
                 </Button>
             </Form>
