@@ -10,6 +10,9 @@ import CurrencyPage from './inner/CurrencyPage';
 import TransferPage from './inner/TransferPage';
 import HistoryPage from './inner/HistoryPage';
 
+import RegisterPage from './inner/RegisterPage';
+import LoginPage from './inner/LoginPage';
+
 import { Container } from 'react-bootstrap'
 
 class MainPage extends React.Component {
@@ -19,11 +22,13 @@ class MainPage extends React.Component {
                 <div>
                     <NavBarTop />
                     <Container>
-                    	<Route path="/" component={HomePage} />
-	                    <Route path="/users" component={UsersPage} />
-	                    <Route path="/currency" component={CurrencyPage} />
-	                    <Route path="/transfer" component={TransferPage} />
-	                    <Route path="/history" component={HistoryPage} />
+                    	<Route exact path="/" component={HomePage} />
+	                    <Route exact path="/users" component={UsersPage} />
+	                    <Route exact path="/currency" component={CurrencyPage} />
+	                    <Route exact path="/transfer" component={TransferPage} />
+	                    <Route exact path="/history" component={HistoryPage} />
+                        <Route exact path="/login" component={LoginPage} />
+                        <Route exact path="/register" component={RegisterPage} />
                     </Container>
                 </div>
             </Router>

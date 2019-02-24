@@ -15,7 +15,7 @@ module.exports = {
         hot: true,
         port: 3000,
         historyApiFallback: true
-    
+
     },
     module: {
         rules: [{
@@ -29,7 +29,10 @@ module.exports = {
             }]
         }, {
             test: /\.css$/,
-            loader: "style-loader!css-loader"
+            loaders: [
+                'style-loader',
+                'css-loader'
+            ]
         }, {
             test: /\.html$/,
             use: [{

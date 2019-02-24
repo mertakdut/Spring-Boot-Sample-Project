@@ -5,8 +5,6 @@ import ReactDOM from 'react-dom';
 
 import MainPage from './pages/MainPage';
 
-//import 'bootstrap';
-// import 'bootstrap/js/dist/navigation';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // tag::render[]
