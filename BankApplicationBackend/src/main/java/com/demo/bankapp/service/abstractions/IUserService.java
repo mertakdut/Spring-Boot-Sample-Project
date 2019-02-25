@@ -10,6 +10,8 @@ public interface IUserService {
 
 	List<User> findAll();
 	
+	User findByUserName(String findByUserName);
+	
 	User addNewUser(CreateNewUserRequest request);
 	
 	User login(LoginRequest request);

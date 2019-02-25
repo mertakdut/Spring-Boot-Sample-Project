@@ -19,6 +19,7 @@ import com.demo.bankapp.model.User;
 import com.demo.bankapp.request.CreateNewUserRequest;
 import com.demo.bankapp.request.LoginRequest;
 import com.demo.bankapp.service.abstractions.IUserService;
+import com.demo.bankapp.service.abstractions.IUserWealthService;
 
 @RestController
 @RequestMapping(value = "/user", produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -29,11 +30,14 @@ public class UserController {
 	private IUserService userService;
 
 	@Autowired
+	private IUserWealthService wealthService;
+
+	@Autowired
 	private UserResourceAssembler assembler;
 
 	@GetMapping("/findAll")
 	public List<Resource<User>> findAll() {
-		 return userService.findAll().stream().map(assembler::toResource).collect(Collectors.toList());
+		return userService.findAll().stream().map(assembler::toResource).collect(Collectors.toList());
 	}
 
 	@PostMapping("/new")
@@ -45,6 +49,8 @@ public class UserController {
 		}
 
 		User user = userService.addNewUser(request);
+		wealthService.newWealthRecord(user.getId());
+
 		return assembler.toResource(user);
 	}
 

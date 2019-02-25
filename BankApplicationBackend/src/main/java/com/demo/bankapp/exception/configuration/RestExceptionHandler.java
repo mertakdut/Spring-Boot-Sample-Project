@@ -27,6 +27,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.demo.bankapp.exception.BadCredentialsException;
 import com.demo.bankapp.exception.BadRequestException;
+import com.demo.bankapp.exception.InsufficientFundsException;
 import com.demo.bankapp.exception.UserNotFoundException;
 
 @ControllerAdvice
@@ -153,11 +154,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler({ BadCredentialsException.class })
 	public ResponseEntity<Object> handleBadCredentials(final BadCredentialsException ex, final WebRequest request) {
-		logger.info(ex.getClass().getName());
-		logger.error("error", ex);
-		//
 		final ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, ex.getLocalizedMessage(), "error occurred");
-		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+		return buildResponseEntity(ex, apiError);
 	}
 
 	@ExceptionHandler({ BadRequestException.class })
@@ -169,6 +167,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({ UserNotFoundException.class })
 	public ResponseEntity<Object> handleUserNotFound(final UserNotFoundException ex, final WebRequest request) {
 		final ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getLocalizedMessage(), "error occurred");
+		return buildResponseEntity(ex, apiError);
+	}
+	
+	@ExceptionHandler({ InsufficientFundsException.class })
+	public ResponseEntity<Object> handle(final InsufficientFundsException ex, final WebRequest request) {
+		final ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, ex.getLocalizedMessage(), "error occurred");
 		return buildResponseEntity(ex, apiError);
 	}
 

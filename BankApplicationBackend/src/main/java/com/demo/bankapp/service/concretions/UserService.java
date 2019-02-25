@@ -35,10 +35,7 @@ public class UserService implements IUserService {
 	@Override
 	public User login(LoginRequest request) throws UserNotFoundException {
 
-		User user = repository.findByUsername(request.getUsername());
-
-		if (user == null)
-			throw new UserNotFoundException(request.getUsername());
+		User user = findByUserName(request.getUsername());
 
 		// TODO: Encoding.
 		// TODO: Stop timing attacks.
@@ -47,6 +44,16 @@ public class UserService implements IUserService {
 		}
 
 		return user;
+	}
+
+	@Override
+	public User findByUserName(String username) {
+		User user = repository.findByUsername(username);
+
+		if (user == null)
+			throw new UserNotFoundException(username);
+		else
+			return user;
 	}
 
 }

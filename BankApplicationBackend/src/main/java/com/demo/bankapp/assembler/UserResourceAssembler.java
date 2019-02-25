@@ -24,7 +24,7 @@ public class UserResourceAssembler implements ResourceAssembler<User, Resource<U
 		
 		return new Resource<>(user,
 			linkTo(methodOn(UserController.class).createNewUser(cnuRequest)).withSelfRel(),
-			linkTo(methodOn(UserController.class).findAll()).withRel("employees")
+			linkTo(methodOn(UserController.class).findAll()).withRel("users")
 		);
 	}
 }

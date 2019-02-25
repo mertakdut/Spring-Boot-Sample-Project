@@ -33,7 +33,7 @@ class PopupDialog extends React.Component {
             <div>
                 <Modal show={this.state.show} onHide={this.handleNegative}>
                     <Modal.Header closeButton>
-                        <Modal.Title>{this.props.title == 0 ? "Error" : this.props.title == 1 ? "Warning" : "Success" }</Modal.Title>
+                        <Modal.Title>{this.props.title == 0 ? "Error" : this.props.title == 1 ? "Warning" : "Success"}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>{this.props.message}</Modal.Body>
                     <Modal.Footer>

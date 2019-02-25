@@ -22,6 +22,7 @@ class MainPage extends React.Component {
                 <div>
                     <NavBarTop />
                     <Container>
+                        <div>You have 1000 USD 5000 EUR</div>
                     	<Route exact path="/" component={HomePage} />
 	                    <Route exact path="/users" component={UsersPage} />
 	                    <Route exact path="/currency" component={CurrencyPage} />

@@ -1,1 +1,0 @@
-insert into User values(11251,'Mert', 'E1234567', '125812851258');

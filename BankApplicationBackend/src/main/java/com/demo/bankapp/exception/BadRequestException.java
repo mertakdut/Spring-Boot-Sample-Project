@@ -6,4 +6,8 @@ public class BadRequestException extends RuntimeException {
 		super("Request is malformed.");
 	}
 
+	public BadRequestException(String message) {
+		super("Request is malformed: " + message);
+	}
+
 }
