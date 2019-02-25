@@ -7,7 +7,7 @@ public class InsufficientFundsException extends RuntimeException {
 	}
 
 	public InsufficientFundsException(String currency) {
-		super("InsufficientFunds: Your " + currency + " funds are not enough.");
+		super("Insufficient Funds: Your " + currency + " funds are not enough.");
 	}
 
 }

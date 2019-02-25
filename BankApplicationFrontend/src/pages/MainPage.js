@@ -33,9 +33,8 @@ class MainPage extends React.Component {
     }
 
     componentDidMount() {
-
         if (this.state.loggedInUsername != null) {
-            retrieveWealthAndUpdateState();
+            this.retrieveWealthAndUpdateState();
         }
     }
 
@@ -67,8 +66,7 @@ class MainPage extends React.Component {
                         <MoneyBar username={this.state.loggedInUsername} ownedCurrencies={this.state.ownedCurrencies} />
                         <Route exact path="/" component={HomePage} />
                         <Route exact path="/users" component={UsersPage} />
-                        <Route path="/abc" render={() => <CurrencyPage onOwnedCurrenciesUpdated={this.retrieveWealthAndUpdateState} />} />
-                        <Route exact path="/currency" component={} />
+                        <Route path="/currency" render={() => <CurrencyPage onOwnedCurrenciesUpdated={this.retrieveWealthAndUpdateState} />} />
                         <Route exact path="/transfer" component={TransferPage} />
                         <Route exact path="/history" component={HistoryPage} />
                         <Route exact path="/login" component={LoginPage} />

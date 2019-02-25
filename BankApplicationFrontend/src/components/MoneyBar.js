@@ -1,19 +1,19 @@
 import React from 'react';
-import { Navbar, Nav, NavItem } from 'react-bootstrap'
+import { Alert } from 'react-bootstrap'
 
 class MoneyBar extends React.Component {
 
     render() {
 
         var barMessage = "You have ";
-        Object.keys(this.props.ownedCurrencies).forEach((key) => {
-            barMessage += this.props.ownedCurrencies[key] + " " + key + " ";
+        Object.keys(this.props.ownedCurrencies).forEach((key, index, array) => {
+            barMessage += this.props.ownedCurrencies[key] + " " + key + ((array.length - 1) != index ? ", " : ".");
         });
 
         return (
-            <div>
+            <Alert className="text-center" variant="primary">
                 {barMessage}
-            </div>
+            </Alert>
         );
     }
 }

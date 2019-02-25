@@ -44,8 +44,13 @@ public class WealthService implements IWealthService {
 			}
 		}
 
-		wealthMap.put("TRY", wealthMap.get("TRY").subtract(tryEquivalent));
-		wealthMap.put(currency, wealthMap.get(currency).add(amount));
+		if (isBuying) {
+			wealthMap.put("TRY", wealthMap.get("TRY").subtract(tryEquivalent));
+			wealthMap.put(currency, wealthMap.get(currency).add(amount));
+		} else {
+			wealthMap.put(currency, wealthMap.get(currency).subtract(amount));
+			wealthMap.put("TRY", wealthMap.get("TRY").add(tryEquivalent));
+		}
 
 		userWealth.setWealthMap(wealthMap);
 		repository.save(userWealth);

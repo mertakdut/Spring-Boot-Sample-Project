@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import apiConfig from '../../config/client';
-import { Table, Button, Modal, InputGroup, FormControl } from 'react-bootstrap';
+import { Table, Button, ButtonToolbar, Modal, InputGroup, FormControl } from 'react-bootstrap';
 import NumberFormat from 'react-number-format';
 
 import PopupDialog from '../../components/PopupDialog';
@@ -26,7 +26,7 @@ class CurrencyPage extends React.Component {
     render() {
         return (
             <div>
-                <CurrencyList currencies={this.state.currencies} />
+                <CurrencyList currencies={this.state.currencies} onOwnedCurrenciesUpdated={this.props.onOwnedCurrenciesUpdated} />
             </div>
         )
     }
@@ -36,7 +36,7 @@ class CurrencyList extends React.Component {
     render() {
         console.log(this.props.currencies);
         const currencies = Object.keys(this.props.currencies).map((keyName, index) => (
-            <Currency key={keyName} currency={keyName} rate={this.props.currencies[keyName]} index={index} />
+            <Currency key={keyName} currency={keyName} rate={this.props.currencies[keyName]} index={index} onOwnedCurrenciesUpdated={this.props.onOwnedCurrenciesUpdated} />
         ))
 
         return (
@@ -62,13 +62,18 @@ class Currency extends React.Component {
             <tr>
                 <td>{this.props.currency}</td>
                 <td>{this.props.rate}</td>
-                <td><BuyButton index={this.props.index} currency={this.props.currency} rate={this.props.rate} /></td>
+                <td>
+                    <ButtonToolbar>
+                        <BuySellButton isBuying={true} index={this.props.index} currency={this.props.currency} rate={this.props.rate} onOwnedCurrenciesUpdated={this.props.onOwnedCurrenciesUpdated} />
+                        <BuySellButton isBuying={false} index={this.props.index} currency={this.props.currency} rate={this.props.rate} onOwnedCurrenciesUpdated={this.props.onOwnedCurrenciesUpdated} />
+                    </ButtonToolbar>
+                </td>
             </tr>
         )
     }
 }
 
-class BuyButton extends React.Component {
+class BuySellButton extends React.Component {
 
     constructor(props) {
         super(props);
@@ -90,6 +95,8 @@ class BuyButton extends React.Component {
         if (isProcessed && message != undefined) {
             this.setState({ isShowingPopup: true, popupTitle: titleSeverity, popupMessage: message });
         }
+
+        this.props.onOwnedCurrenciesUpdated();
     }
 
     render() {
@@ -99,16 +106,16 @@ class BuyButton extends React.Component {
             : null;
 
         const buyDialog = this.state.isShowingBuyPopup ?
-            <BuyModal currency={this.props.currency} rate={this.props.rate} callback={this.onBuyingPopupClosed} />
+            <BuyModal isBuying={this.props.isBuying} currency={this.props.currency} rate={this.props.rate} callback={this.onBuyingPopupClosed} />
             : null;
 
         return (
             <div>
                 {popupDialog}
                 {buyDialog}
-                <Button variant="primary" onClick={() => { this.setState({ isShowingBuyPopup: true }) }}>
-                    Buy
-            </Button>
+                <Button className="mx-1" variant={this.props.isBuying ? 'success' : 'danger'} onClick={() => { this.setState({ isShowingBuyPopup: true }) }}>
+                    {this.props.isBuying ? 'Buy' : 'Sell'}
+                </Button>
             </div>
         )
     }
@@ -141,12 +148,12 @@ class BuyModal extends React.Component {
 
         axios.post(apiConfig.apiBaseUrl + '/transaction/make', {
             username: "Mert",
-            buying: true,
+            buying: this.props.isBuying,
             currency: this.props.currency,
             amount: this.state.inputAmount
         }).then((response) => {
             console.log(response);
-            this.props.callback(true, "Bought " + response.data.amount + " " + response.data.currency + ".", 2);
+            this.props.callback(true, (this.props.isBuying ? "Bought " : "Sold ") + response.data.amount + " " + response.data.currency + ".", 2);
         }).catch((error) => {
             var errorMessage = 'An error occurred';
             if (error != null && error.response != null) {
@@ -167,7 +174,7 @@ class BuyModal extends React.Component {
         return (
             <Modal show={this.state.show} onHide={() => { this.props.callback(false); }}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Buying {this.props.currency}</Modal.Title>
+                    <Modal.Title>{this.props.isBuying ? 'Buying' : 'Selling'} {this.props.currency}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <InputGroup className="mb-3">
@@ -181,7 +188,7 @@ class BuyModal extends React.Component {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => { this.props.callback(false); }}>Cancel</Button>
-                    <Button variant="success" onClick={this.handlePositive}>Buy</Button>
+                    <Button variant="success" onClick={this.handlePositive}>{this.props.isBuying ? 'Buy' : 'Sell'}</Button>
                 </Modal.Footer>
             </Modal>
         );
