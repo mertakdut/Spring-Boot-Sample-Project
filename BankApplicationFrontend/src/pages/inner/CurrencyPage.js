@@ -85,29 +85,31 @@ class BuyButton extends React.Component {
 
     onBuyingPopupClosed(isProcessed, message, titleSeverity) {
         console.log(isProcessed + "::" + message);
-        if (isProcessed && message != null) {
-            this.setState({ isShowingBuyPopup: false, isShowingPopup: true, popupTitle: titleSeverity, popupMessage: message });
+
+        this.setState({ isShowingBuyPopup: false });
+        if (isProcessed && message != undefined) {
+            this.setState({ isShowingPopup: true, popupTitle: titleSeverity, popupMessage: message });
         }
     }
 
     render() {
 
-        if (this.state.isShowingPopup) {
-            return (
-                <PopupDialog callback={() => this.setState({ isShowingPopup: false })} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
-            )
-        }
+        const popupDialog = this.state.isShowingPopup ?
+            <PopupDialog callback={() => this.setState({ isShowingPopup: false })} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
+            : null;
 
-        if (this.state.isShowingBuyPopup) {
-            return (
-                <BuyModal currency={this.props.currency} rate={this.props.rate} callback={this.onBuyingPopupClosed} />
-            )
-        }
+        const buyDialog = this.state.isShowingBuyPopup ?
+            <BuyModal currency={this.props.currency} rate={this.props.rate} callback={this.onBuyingPopupClosed} />
+            : null;
 
         return (
-            <Button variant="primary" onClick={() => { this.setState({ isShowingBuyPopup: true }) }}>
-                Buy
+            <div>
+                {popupDialog}
+                {buyDialog}
+                <Button variant="primary" onClick={() => { this.setState({ isShowingBuyPopup: true }) }}>
+                    Buy
             </Button>
+            </div>
         )
     }
 }

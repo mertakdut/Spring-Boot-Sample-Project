@@ -14,7 +14,6 @@ import com.demo.bankapp.request.LoginRequest;
 import com.demo.bankapp.service.abstractions.IUserService;
 
 @Service
-// @Transactional
 public class UserService implements IUserService {
 
 	@Autowired

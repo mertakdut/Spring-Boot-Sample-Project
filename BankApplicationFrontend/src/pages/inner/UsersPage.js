@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Table, Button } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 
 import apiConfig from '../../config/client';
 
@@ -15,9 +15,9 @@ class UsersPage extends React.Component {
         axios.get(apiConfig.apiBaseUrl + 'user/findAll')
             .then((response) => {
                 console.log(response);
-                this.setState({ users: response.data._embedded.users });
+                this.setState({ users: response.data });
             }).catch((error) => {
-                console.log(error.response);
+                console.log(error);
             }).finally(() => {
             });
     }
@@ -36,7 +36,6 @@ class UsersPage extends React.Component {
         return (
             <div>
                 <UserList users={this.state.users} />
-                <Button>aa</Button>
             </div>
         )
     }
@@ -45,7 +44,7 @@ class UsersPage extends React.Component {
 class UserList extends React.Component {
     render() {
         const users = this.props.users.map((user, index) =>
-            <User key={user._links.self.href} user={user} index={index} />
+            <User key={user.id} user={user} index={index} /> // key={user.links.self.href}
         );
         return (
             <Table striped bordered hover>

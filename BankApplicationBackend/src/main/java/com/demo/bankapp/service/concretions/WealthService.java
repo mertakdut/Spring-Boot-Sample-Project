@@ -11,19 +11,20 @@ import org.springframework.web.client.RestTemplate;
 import com.demo.bankapp.exception.BadRequestException;
 import com.demo.bankapp.exception.InsufficientFundsException;
 import com.demo.bankapp.exception.UserNotFoundException;
-import com.demo.bankapp.model.UserWealth;
-import com.demo.bankapp.repository.UserWealthRepository;
-import com.demo.bankapp.service.abstractions.IUserWealthService;
+import com.demo.bankapp.model.Wealth;
+import com.demo.bankapp.repository.WealthRepository;
+import com.demo.bankapp.service.abstractions.IWealthService;
 
 @Service
-public class UserWealthService implements IUserWealthService {
+public class WealthService implements IWealthService {
 
 	@Autowired
-	private UserWealthRepository repository;
+	private WealthRepository repository;
 
+	@Override
 	public void makeWealthTransaction(Long userId, String currency, BigDecimal amount, boolean isBuying) {
 
-		UserWealth userWealth = repository.findById(userId).orElseThrow(() -> new UserNotFoundException());
+		Wealth userWealth = repository.findById(userId).orElseThrow(() -> new UserNotFoundException());
 		Map<String, BigDecimal> wealthMap = userWealth.getWealthMap();
 
 		if (!wealthMap.containsKey(currency)) {
@@ -62,8 +63,13 @@ public class UserWealthService implements IUserWealthService {
 
 		addInitialBalance(wealthMap);
 
-		UserWealth userWealth = new UserWealth(userId, wealthMap);
+		Wealth userWealth = new Wealth(userId, wealthMap);
 		repository.save(userWealth);
+	}
+
+	@Override
+	public Wealth findWealth(Long userId) {
+		return repository.findById(userId).orElseThrow(() -> new UserNotFoundException());
 	}
 
 	private void addInitialBalance(Map<String, BigDecimal> wealthMap) {

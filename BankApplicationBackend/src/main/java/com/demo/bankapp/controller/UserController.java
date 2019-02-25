@@ -19,7 +19,7 @@ import com.demo.bankapp.model.User;
 import com.demo.bankapp.request.CreateNewUserRequest;
 import com.demo.bankapp.request.LoginRequest;
 import com.demo.bankapp.service.abstractions.IUserService;
-import com.demo.bankapp.service.abstractions.IUserWealthService;
+import com.demo.bankapp.service.abstractions.IWealthService;
 
 @RestController
 @RequestMapping(value = "/user", produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -30,7 +30,7 @@ public class UserController {
 	private IUserService userService;
 
 	@Autowired
-	private IUserWealthService wealthService;
+	private IWealthService wealthService;
 
 	@Autowired
 	private UserResourceAssembler assembler;

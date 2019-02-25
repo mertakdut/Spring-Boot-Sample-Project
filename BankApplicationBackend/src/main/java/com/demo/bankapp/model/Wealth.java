@@ -12,18 +12,18 @@ import lombok.Data;
 
 @Data
 @Entity
-public class UserWealth {
+public class Wealth {
 
 	private @Id @GeneratedValue Long userId;
 
 	@ElementCollection
 	private Map<String, BigDecimal> wealthMap;
 
-	private UserWealth() {
+	private Wealth() {
 
 	}
 
-	public UserWealth(Long userId, Map<String, BigDecimal> wealthMap) {
+	public Wealth(Long userId, Map<String, BigDecimal> wealthMap) {
 		this.userId = userId;
 		this.wealthMap = wealthMap;
 	}

@@ -18,7 +18,7 @@ import com.demo.bankapp.model.User;
 import com.demo.bankapp.request.MakeTransactionRequest;
 import com.demo.bankapp.service.concretions.TransactionService;
 import com.demo.bankapp.service.concretions.UserService;
-import com.demo.bankapp.service.concretions.UserWealthService;
+import com.demo.bankapp.service.concretions.WealthService;
 
 @RestController
 @RequestMapping(value = "/transaction", produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -35,7 +35,7 @@ public class TransactionController {
 	UserService userService;
 
 	@Autowired
-	UserWealthService userWealthService;
+	WealthService userWealthService;
 
 	@PostMapping("/make")
 	public Resource<Transaction> makeTransaction(@RequestBody MakeTransactionRequest request) {
