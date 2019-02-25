@@ -18,6 +18,7 @@ import LoginPage from './inner/LoginPage';
 
 import { Container } from 'react-bootstrap'
 import MoneyBar from '../components/MoneyBar';
+import PopupDialog from '../components/PopupDialog';
 
 class MainPage extends React.Component {
 
@@ -26,7 +27,10 @@ class MainPage extends React.Component {
 
         this.state = {
             loggedInUsername: 'Mert',  // localStorage.getItem('liUsername'),
-            ownedCurrencies: []
+            ownedCurrencies: [],
+            isShowingPopup: false,
+            popupTitle: 0,
+            popupMessage: '',
         };
 
         this.retrieveWealthAndUpdateState = this.retrieveWealthAndUpdateState.bind(this);
@@ -51,16 +55,25 @@ class MainPage extends React.Component {
             console.log(this.state.ownedCurrencies);
         }).catch((error) => {
             console.log(error);
-        }).finally(() => {
-
+            var errorMessage = 'Network error';
+            if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
+                errorMessage = error.response.data.message;
+            }
+            this.setState({ isShowingPopup: true, popupTitle: 0, popupMessage: errorMessage });
         });
 
     }
 
     render() {
+
+        const popupDialog = this.state.isShowingPopup ?
+            <PopupDialog callback={() => this.setState({ isShowingPopup: false })} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
+            : null;
+
         return (
             <Router>
                 <div>
+                    {popupDialog}
                     <NavBarTop isUserLoggedIn={this.state.loggedInUsername} />
                     <Container>
                         <MoneyBar username={this.state.loggedInUsername} ownedCurrencies={this.state.ownedCurrencies} />

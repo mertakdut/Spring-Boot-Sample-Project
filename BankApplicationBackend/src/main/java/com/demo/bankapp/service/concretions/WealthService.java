@@ -31,8 +31,8 @@ public class WealthService implements IWealthService {
 			throw new BadRequestException("Invalid currency.");
 		}
 
-		double rate = getCurrencyRate(currency);
-		BigDecimal tryEquivalent = new BigDecimal(amount.doubleValue() * rate);
+		BigDecimal rate = new BigDecimal(getCurrencyRate(currency));
+		BigDecimal tryEquivalent = amount.multiply(rate);
 
 		if (isBuying) {
 			if (tryEquivalent.compareTo(wealthMap.get("TRY")) == 1) { // Trying to buy more than he can.
