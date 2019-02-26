@@ -6,7 +6,7 @@ class FormElement extends React.Component {
         return (
             <Form.Group controlId={this.props.controlId}>
                 <Form.Label>{this.props.label}</Form.Label>
-                <Form.Control type={this.props.type} placeholder={this.props.label} onChange={this.props.onChange} value={this.props.value} />
+                <Form.Control type={this.props.type} placeholder={this.props.label} onChange={this.props.onChange} value={this.props.value} maxLength={this.props.maxLength}/>
             </Form.Group>
         )
     }
