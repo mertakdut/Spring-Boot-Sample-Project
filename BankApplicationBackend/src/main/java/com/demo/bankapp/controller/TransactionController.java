@@ -1,11 +1,14 @@
 package com.demo.bankapp.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,6 +61,11 @@ public class TransactionController {
 		Transaction transaction = transactionService.createNewTransaction(user.getId(), request.isBuying(), request.getCurrency(), request.getAmount());
 
 		return assembler.toResource(transaction);
+	}
+	
+	@GetMapping("/findAll")
+	public List<Resource<Transaction>> findAll() {
+		return transactionService.findAll().stream().map(assembler::toResource).collect(Collectors.toList());
 	}
 
 }

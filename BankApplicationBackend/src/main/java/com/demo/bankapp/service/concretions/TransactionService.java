@@ -1,6 +1,7 @@
 package com.demo.bankapp.service.concretions;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,11 @@ public class TransactionService implements ITransactionService {
 	@Override
 	public int getOperationCountFromLast24Hours(Long userId) {
 		return repository.getOperationCountFromLast24Hours(userId);
+	}
+
+	@Override
+	public List<Transaction> findAll() {
+		return repository.findAll();
 	}
 
 }

@@ -1,12 +1,16 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import Request from '../../services/Request';
+import PopupDialog from '../../components/PopupDialog';
 
 class UsersPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { users: [] };
+        this.state = {
+            users: [],
+            isShowingPopup: false
+        };
     }
 
     componentDidMount() {
@@ -36,8 +40,14 @@ class UsersPage extends React.Component {
     // }
 
     render() {
+
+        const popupDialog = this.state.isShowingPopup ?
+            <PopupDialog callback={() => this.setState({ isShowingPopup: false })} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
+            : null;
+
         return (
             <div>
+                {popupDialog}
                 <UserList users={this.state.users} />
             </div>
         )
