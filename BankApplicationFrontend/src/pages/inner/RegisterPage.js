@@ -1,8 +1,6 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap'
 import FormElement from '../../components/FormElement'
-import axios from 'axios';
-import apiConfig from '../../config/client';
 
 import PopupDialog from '../../components/PopupDialog';
 
@@ -100,23 +98,25 @@ class RegisterPage extends React.Component {
     }
 
     render() {
+        const popupDialog = this.state.isShowingPopup ?
+            <PopupDialog callback={() => this.setState({ isShowingPopup: false })} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
+            : null;
 
-        if (this.state.isShowingPopup) {
-            return <PopupDialog callback={this.onPopupClosed} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
-        }
-
-        let formStyle = {
+        const formStyle = {
             marginTop: '7%'
         };
 
         return (
-            <Form style={formStyle}>
-                <FormElement controlId={"formUsername"} label={"Username"} type={"text"} onChange={this.handleUsernameChange} value={this.state.username} />
-                <FormElement controlId={"formTcNo"} label={"TC No"} type={"text"} onChange={this.handleTcNoChange} value={this.state.tcno} />
-                <FormElement controlId={"formPassword"} label={"Password"} type={"password"} onChange={this.handleFirstPasswordChange} value={this.state.firstPass} />
-                <FormElement controlId={"formSecondPassword"} label={"Retype Password"} type={"password"} onChange={this.handleSecondPasswordChange} value={this.state.secondPass} />
-                <Button variant="primary" onClick={this.handleClick} disabled={this.state.isProcessingRegister}>Register</Button>
-            </Form>
+            <div>
+                {popupDialog}
+                <Form style={formStyle}>
+                    <FormElement controlId={"formUsername"} label={"Username"} type={"text"} onChange={this.handleUsernameChange} value={this.state.username} />
+                    <FormElement controlId={"formTcNo"} label={"TC No"} type={"text"} onChange={this.handleTcNoChange} value={this.state.tcno} />
+                    <FormElement controlId={"formPassword"} label={"Password"} type={"password"} onChange={this.handleFirstPasswordChange} value={this.state.firstPass} />
+                    <FormElement controlId={"formSecondPassword"} label={"Retype Password"} type={"password"} onChange={this.handleSecondPasswordChange} value={this.state.secondPass} />
+                    <Button variant="primary" onClick={this.handleClick} disabled={this.state.isProcessingRegister}>Register</Button>
+                </Form>
+            </div>
         )
 
     }

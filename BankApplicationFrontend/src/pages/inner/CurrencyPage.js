@@ -1,10 +1,10 @@
 import React from 'react';
-import axios from 'axios';
-import apiConfig from '../../config/client';
 import { Table, Button, ButtonToolbar, Modal, InputGroup, FormControl } from 'react-bootstrap';
 import NumberFormat from 'react-number-format';
 
 import PopupDialog from '../../components/PopupDialog';
+
+import Request from '../../services/Request'
 
 class CurrencyPage extends React.Component {
 
@@ -14,13 +14,12 @@ class CurrencyPage extends React.Component {
     }
 
     componentDidMount() {
-        axios.get('https://api.exchangeratesapi.io/latest?base=TRY')
-            .then((response) => {
-                // console.log(response);
-                this.setState({ currencies: response.data.rates });
-            }).catch((error) => {
-                console.log(error.response);
-            });
+        const request = new Request().getRequestInstance('https://api.exchangeratesapi.io');
+        request.get('/latest?base=TRY').then((response) => {
+            this.setState({ currencies: response.data.rates });
+        }).catch((error) => {
+            console.log(error);
+        });
     }
 
     render() {
@@ -117,7 +116,7 @@ class BuySellButton extends React.Component {
             <div>
                 {popupDialog}
                 {buyDialog}
-                <Button className="mx-1" variant={this.props.isBuying ? 'success' : 'danger'} onClick={() => { this.setState({ isShowingBuyPopup: true }) }}>
+                <Button className="mx-1" variant={this.props.isBuying ? 'success' : 'danger'} onClick={() => { this.setState({ isShowingBuyPopup: true }) }} disabled={this.props.currency === "TRY"}>
                     {this.props.isBuying ? 'Buy' : 'Sell'}
                 </Button>
             </div>
@@ -144,7 +143,7 @@ class BuySellModal extends React.Component {
     onInputAmountChange(e) {
         this.setState({
             inputAmount: e.target.value,
-            convertedAmount: (e.target.value * this.props.rate).toFixed(2)
+            convertedAmount: (e.target.value / this.props.rate).toFixed(2)
         });
     }
 
@@ -154,28 +153,30 @@ class BuySellModal extends React.Component {
             isProcessingTransaction: true
         });
 
-        axios.post(apiConfig.apiBaseUrl + 'transaction/make', {
-            username: "Mert",
-            buying: this.props.isBuying,
-            currency: this.props.currency,
-            amount: this.state.inputAmount
-        }).then((response) => {
-            console.log(response);
-            this.props.callback(true, (this.props.isBuying ? "Bought " : "Sold ") + response.data.amount + " " + response.data.currency + ".", 2);
-        }).catch((error) => {
-            var errorMessage = 'Network Error';
-            if (error != null && error.response != null) {
-                console.log(error.response);
-                if (error.response.data != null && error.response.data.message != null) {
-                    errorMessage = error.response.data.message;
+        const request = new Request().getRequestInstance();
+        request.post('transaction/make',
+            {
+                username: "Mert",
+                buying: this.props.isBuying,
+                currency: this.props.currency,
+                amount: this.state.inputAmount
+            }).then((response) => {
+                console.log(response);
+                this.props.callback(true, (this.props.isBuying ? "Bought " : "Sold ") + response.data.amount + " " + response.data.currency + ".", 2);
+            }).catch((error) => {
+                var errorMessage = 'Network Error';
+                if (error != null && error.response != null) {
+                    console.log(error.response);
+                    if (error.response.data != null && error.response.data.message != null) {
+                        errorMessage = error.response.data.message;
+                    }
                 }
-            }
-            this.props.callback(true, errorMessage, 0);
-        }).finally(() => {
-            this.setState({
-                show: false
+                this.props.callback(true, errorMessage, 0);
+            }).finally(() => {
+                this.setState({
+                    show: false
+                });
             });
-        });
     }
 
     render() {
@@ -189,14 +190,16 @@ class BuySellModal extends React.Component {
                         <FormControl placeholder="Enter amount" onChange={this.onInputAmountChange} maxLength={6} />
                         <InputGroup.Append>
                             <InputGroup.Text>
-                                <NumberFormat value={this.state.convertedAmount} displayType={'text'} thousandSeparator={true} suffix={'TL'} />
+                                <NumberFormat value={this.state.convertedAmount} displayType={'text'} thousandSeparator={true} prefix={this.props.isBuying ? '-' : '+'} suffix={'TL'} />
                             </InputGroup.Text>
                         </InputGroup.Append>
                     </InputGroup>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => { this.props.callback(false); }}>Cancel</Button>
-                    <Button variant="success" onClick={this.handlePositive} disabled={this.state.isProcessingTransaction || isNaN(this.state.inputAmount)}>{this.props.isBuying ? 'Buy' : 'Sell'}</Button>
+                    <Button variant="success" onClick={this.handlePositive} disabled={this.state.isProcessingTransaction || isNaN(this.state.inputAmount) || this.props.currency === "TRY"}>
+                        {this.props.isBuying ? 'Buy' : 'Sell'}
+                    </Button>
                 </Modal.Footer>
             </Modal>
         );

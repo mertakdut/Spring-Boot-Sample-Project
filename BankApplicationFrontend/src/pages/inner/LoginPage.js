@@ -2,8 +2,6 @@ import React from 'react';
 import { Form, Button } from 'react-bootstrap';
 import FormElement from '../../components/FormElement';
 import PopupDialog from '../../components/PopupDialog';
-import axios from 'axios';
-import apiConfig from '../../config/client';
 
 const ERROR_ALLFIELDSMANDATORY = 'All fields are mandatory.';
 
@@ -55,15 +53,20 @@ class LoginPage extends React.Component {
         if (this.state.username == "" || this.state.password == "") {
             this.setState({ isShowingPopup: true, popupTitle: 1, popupMessage: ERROR_ALLFIELDSMANDATORY });
         } else {
-            axios.post(apiConfig.apiBaseUrl + 'user/login', {
+            const request = new Request().getRequestInstance();
+            request.post('user/login', {
                 username: this.state.username,
                 password: this.state.password
             }).then((response) => {
                 console.log(response);
                 this.setState({ isShowingPopup: true, popupTitle: 2, popupMessage: SUCCESS_REGISTER });
             }).catch((error) => {
-                console.log(error.response);
-                this.setState({ isShowingPopup: true, popupTitle: 0, popupMessage: error.response.data.message });
+                console.log(error);
+                var errorMessage = 'Network error';
+                if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
+                    errorMessage = error.response.data.message;
+                }
+                this.setState({ isShowingPopup: true, popupTitle: 0, popupMessage: errorMessage });
             }).finally(() => {
                 this.resetFields();
                 this.setState({

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
 import NavBarTop from '../components/NavigationBar';
@@ -10,15 +9,14 @@ import CurrencyPage from './inner/CurrencyPage';
 import TransferPage from './inner/TransferPage';
 import HistoryPage from './inner/HistoryPage';
 
-import axios from 'axios';
-import apiConfig from '../config/client';
-
 import RegisterPage from './inner/RegisterPage';
 import LoginPage from './inner/LoginPage';
 
 import { Container } from 'react-bootstrap'
 import MoneyBar from '../components/MoneyBar';
 import PopupDialog from '../components/PopupDialog';
+
+import Request from '../services/Request'
 
 class MainPage extends React.Component {
 
@@ -43,25 +41,23 @@ class MainPage extends React.Component {
     }
 
     retrieveWealthAndUpdateState() {
-
-        axios.post(apiConfig.apiBaseUrl + 'wealth/retrieve', {
-            username: this.state.loggedInUsername
-        }).then((response) => {
-            console.log(response);
-            Object.keys(response.data.wealthMap).map((key) => {
-                if (response.data.wealthMap[key] == 0) delete response.data.wealthMap[key];
+        const request = new Request().getRequestInstance();
+        request.post('wealth/retrieve', { username: this.state.loggedInUsername })
+            .then((response) => {
+                console.log(response);
+                Object.keys(response.data.wealthMap).map((key) => {
+                    if (response.data.wealthMap[key] == 0) delete response.data.wealthMap[key];
+                });
+                this.setState({ ownedCurrencies: response.data.wealthMap });
+                console.log(this.state.ownedCurrencies);
+            }).catch((error) => {
+                console.log(error);
+                var errorMessage = 'Network error';
+                if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
+                    errorMessage = error.response.data.message;
+                }
+                this.setState({ isShowingPopup: true, popupTitle: 0, popupMessage: errorMessage });
             });
-            this.setState({ ownedCurrencies: response.data.wealthMap });
-            console.log(this.state.ownedCurrencies);
-        }).catch((error) => {
-            console.log(error);
-            var errorMessage = 'Network error';
-            if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
-                errorMessage = error.response.data.message;
-            }
-            this.setState({ isShowingPopup: true, popupTitle: 0, popupMessage: errorMessage });
-        });
-
     }
 
     render() {
@@ -70,17 +66,21 @@ class MainPage extends React.Component {
             <PopupDialog callback={() => this.setState({ isShowingPopup: false })} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
             : null;
 
+        const moneyBar = this.state.loggedInUsername != null ?
+            <MoneyBar username={this.state.loggedInUsername} ownedCurrencies={this.state.ownedCurrencies} />
+            : null;
+
         return (
             <Router>
                 <div>
                     {popupDialog}
                     <NavBarTop isUserLoggedIn={this.state.loggedInUsername} />
                     <Container>
-                        <MoneyBar username={this.state.loggedInUsername} ownedCurrencies={this.state.ownedCurrencies} />
+                        {moneyBar}
                         <Route exact path="/" component={HomePage} />
                         <Route exact path="/users" component={UsersPage} />
-                        <Route path="/currency" render={() => <CurrencyPage onOwnedCurrenciesUpdated={this.retrieveWealthAndUpdateState} />} />
-                        <Route exact path="/transfer" component={TransferPage} />
+                        <Route exact path="/currency" render={() => <CurrencyPage onOwnedCurrenciesUpdated={this.retrieveWealthAndUpdateState} />} />
+                        <Route exact path="/transfer" render={() => <TransferPage onOwnedCurrenciesUpdated={this.retrieveWealthAndUpdateState} />} />
                         <Route exact path="/history" component={HistoryPage} />
                         <Route exact path="/login" component={LoginPage} />
                         <Route exact path="/register" component={RegisterPage} />

@@ -1,8 +1,6 @@
 import React from 'react';
-import axios from 'axios';
-import { Table } from 'react-bootstrap'
-
-import apiConfig from '../../config/client';
+import { Table } from 'react-bootstrap';
+import Request from '../../services/Request';
 
 class UsersPage extends React.Component {
 
@@ -12,13 +10,18 @@ class UsersPage extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(apiConfig.apiBaseUrl + 'user/findAll')
+        const request = new Request().getRequestInstance();
+        request.get('user/findAll')
             .then((response) => {
                 console.log(response);
                 this.setState({ users: response.data });
             }).catch((error) => {
                 console.log(error);
-            }).finally(() => {
+                var errorMessage = 'Network error';
+                if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
+                    errorMessage = error.response.data.message;
+                }
+                this.setState({ isShowingPopup: true, popupTitle: 0, popupMessage: errorMessage });
             });
     }
 
