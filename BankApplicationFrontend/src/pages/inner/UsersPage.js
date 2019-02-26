@@ -51,8 +51,8 @@ class UserList extends React.Component {
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Name</th>
-                        <th>TcNo</th>
+                        <th>Username</th>
+                        <th>TC No</th>
                     </tr>
                 </thead>
                 <tbody>

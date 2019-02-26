@@ -115,9 +115,7 @@ class RegisterPage extends React.Component {
                 <FormElement controlId={"formTcNo"} label={"TC No"} type={"text"} onChange={this.handleTcNoChange} value={this.state.tcno} />
                 <FormElement controlId={"formPassword"} label={"Password"} type={"password"} onChange={this.handleFirstPasswordChange} value={this.state.firstPass} />
                 <FormElement controlId={"formSecondPassword"} label={"Retype Password"} type={"password"} onChange={this.handleSecondPasswordChange} value={this.state.secondPass} />
-                <Button variant="primary" onClick={this.handleClick} disabled={this.state.isProcessingRegister}>
-                    Submit
-                </Button>
+                <Button variant="primary" onClick={this.handleClick} disabled={this.state.isProcessingRegister}>Register</Button>
             </Form>
         )
 

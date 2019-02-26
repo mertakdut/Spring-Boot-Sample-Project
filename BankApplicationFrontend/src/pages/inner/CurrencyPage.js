@@ -92,12 +92,14 @@ class BuySellButton extends React.Component {
         console.log(isProcessed + "::" + message);
 
         this.setState({ isShowingBuyPopup: false });
-        if (isProcessed && message != undefined) {
-            this.setState({ isShowingPopup: true, popupTitle: statusCode, popupMessage: message });
-        }
+        if (isProcessed) {
+            if (message != null) {
+                this.setState({ isShowingPopup: true, popupTitle: statusCode, popupMessage: message });
+            }
 
-        if (statusCode != 0) {
-            this.props.onOwnedCurrenciesUpdated();
+            if (statusCode != 0) {
+                this.props.onOwnedCurrenciesUpdated();
+            }
         }
     }
 
@@ -108,7 +110,7 @@ class BuySellButton extends React.Component {
             : null;
 
         const buyDialog = this.state.isShowingBuyPopup ?
-            <BuyModal isBuying={this.props.isBuying} currency={this.props.currency} rate={this.props.rate} callback={this.onBuyingPopupClosed} />
+            <BuySellModal isBuying={this.props.isBuying} currency={this.props.currency} rate={this.props.rate} callback={this.onBuyingPopupClosed} />
             : null;
 
         return (
@@ -123,7 +125,7 @@ class BuySellButton extends React.Component {
     }
 }
 
-class BuyModal extends React.Component {
+class BuySellModal extends React.Component {
 
     constructor(props) {
         super(props);
@@ -161,7 +163,7 @@ class BuyModal extends React.Component {
             console.log(response);
             this.props.callback(true, (this.props.isBuying ? "Bought " : "Sold ") + response.data.amount + " " + response.data.currency + ".", 2);
         }).catch((error) => {
-            var errorMessage = 'An error occurred';
+            var errorMessage = 'Network Error';
             if (error != null && error.response != null) {
                 console.log(error.response);
                 if (error.response.data != null && error.response.data.message != null) {

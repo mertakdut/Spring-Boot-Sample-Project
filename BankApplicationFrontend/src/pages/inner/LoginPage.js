@@ -94,9 +94,7 @@ class LoginPage extends React.Component {
             <Form style={formStyle}>
                 <FormElement controlId={"formUsername"} label={"Username"} type={"text"} onChange={this.handleUsernameChange} value={this.state.username} />
                 <FormElement controlId={"formPassword"} label={"Password"} type={"password"} onChange={this.handlePasswordChange} value={this.state.password} />
-                <Button variant="primary" onClick={this.handleClick} disabled={this.state.isProcessingLogin}>
-                    Submit
-                </Button>
+                <Button variant="primary" onClick={this.handleClick} disabled={this.state.isProcessingLogin}>Login</Button>
             </Form>
         )
     }
