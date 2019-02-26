@@ -6,5 +6,7 @@ import com.demo.bankapp.request.MakeTransactionRequest;
 public interface ITransactionService {
 
 	Transaction createNewTransaction(Long userId, MakeTransactionRequest request);
+	
+	int getOperationCountFromLast24Hours(Long userId);
 
 }

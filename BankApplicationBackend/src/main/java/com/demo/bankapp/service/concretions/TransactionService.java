@@ -20,4 +20,9 @@ public class TransactionService implements ITransactionService {
 		return repository.save(transaction);
 	}
 
+	@Override
+	public int getOperationCountFromLast24Hours(Long userId) {
+		return repository.getOperationCountFromLast24Hours(userId);
+	}
+
 }

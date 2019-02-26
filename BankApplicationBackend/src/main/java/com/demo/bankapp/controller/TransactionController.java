@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.bankapp.assembler.TransactionAssembler;
 import com.demo.bankapp.exception.BadRequestException;
+import com.demo.bankapp.exception.DailyOperationLimitReachedException;
 import com.demo.bankapp.model.Transaction;
 import com.demo.bankapp.model.User;
 import com.demo.bankapp.request.MakeTransactionRequest;
@@ -46,9 +47,16 @@ public class TransactionController {
 		}
 
 		User user = userService.findByUserName(request.getUsername());
-		userWealthService.makeWealthTransaction(user.getId(), request.getCurrency(), request.getAmount(), request.isBuying());
 
+		int last24HoursOperationCount = transactionService.getOperationCountFromLast24Hours(user.getId());
+
+		if (last24HoursOperationCount >= 10) {
+			throw new DailyOperationLimitReachedException();
+		}
+
+		userWealthService.makeWealthTransaction(user.getId(), request.getCurrency(), request.getAmount(), request.isBuying());
 		Transaction transaction = transactionService.createNewTransaction(user.getId(), request);
+
 		return assembler.toResource(transaction);
 	}
 

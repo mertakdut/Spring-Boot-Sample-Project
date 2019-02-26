@@ -88,15 +88,17 @@ class BuySellButton extends React.Component {
         this.onBuyingPopupClosed = this.onBuyingPopupClosed.bind(this);
     }
 
-    onBuyingPopupClosed(isProcessed, message, titleSeverity) {
+    onBuyingPopupClosed(isProcessed, message, statusCode) {
         console.log(isProcessed + "::" + message);
 
         this.setState({ isShowingBuyPopup: false });
         if (isProcessed && message != undefined) {
-            this.setState({ isShowingPopup: true, popupTitle: titleSeverity, popupMessage: message });
+            this.setState({ isShowingPopup: true, popupTitle: statusCode, popupMessage: message });
         }
 
-        this.props.onOwnedCurrenciesUpdated();
+        if (statusCode != 0) {
+            this.props.onOwnedCurrenciesUpdated();
+        }
     }
 
     render() {
@@ -146,7 +148,11 @@ class BuyModal extends React.Component {
 
     handlePositive() {
 
-        axios.post(apiConfig.apiBaseUrl + '/transaction/make', {
+        this.setState({
+            isProcessingTransaction: true
+        });
+
+        axios.post(apiConfig.apiBaseUrl + 'transaction/make', {
             username: "Mert",
             buying: this.props.isBuying,
             currency: this.props.currency,
@@ -188,7 +194,7 @@ class BuyModal extends React.Component {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => { this.props.callback(false); }}>Cancel</Button>
-                    <Button variant="success" onClick={this.handlePositive}>{this.props.isBuying ? 'Buy' : 'Sell'}</Button>
+                    <Button variant="success" onClick={this.handlePositive} disabled={this.state.isProcessingTransaction || isNaN(this.state.inputAmount)}>{this.props.isBuying ? 'Buy' : 'Sell'}</Button>
                 </Modal.Footer>
             </Modal>
         );
