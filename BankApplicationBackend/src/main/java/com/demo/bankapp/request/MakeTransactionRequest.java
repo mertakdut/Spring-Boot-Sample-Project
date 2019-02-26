@@ -3,8 +3,10 @@ package com.demo.bankapp.request;
 import java.math.BigDecimal;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class MakeTransactionRequest extends BaseRequest {
 
 	private String username;

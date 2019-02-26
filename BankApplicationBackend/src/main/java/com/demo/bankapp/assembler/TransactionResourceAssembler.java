@@ -9,11 +9,10 @@ import org.springframework.stereotype.Component;
 
 import com.demo.bankapp.controller.TransactionController;
 import com.demo.bankapp.model.Transaction;
-import com.demo.bankapp.model.User;
 import com.demo.bankapp.request.MakeTransactionRequest;
 
 @Component
-public class TransactionAssembler implements ResourceAssembler<Transaction, Resource<Transaction>> {
+public class TransactionResourceAssembler implements ResourceAssembler<Transaction, Resource<Transaction>> {
 	
 	@Override
 	public Resource<Transaction> toResource(Transaction transaction) {

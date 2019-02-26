@@ -1,15 +1,10 @@
 package com.demo.bankapp.assembler;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceAssembler;
 import org.springframework.stereotype.Component;
 
-import com.demo.bankapp.controller.UserController;
 import com.demo.bankapp.model.Wealth;
-import com.demo.bankapp.request.CreateNewUserRequest;
 
 @Component
 public class WealthResourceAssembler implements ResourceAssembler<Wealth, Resource<Wealth>> {

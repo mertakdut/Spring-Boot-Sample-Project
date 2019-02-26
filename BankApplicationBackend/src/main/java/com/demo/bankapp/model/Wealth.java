@@ -20,7 +20,6 @@ public class Wealth {
 	private Map<String, BigDecimal> wealthMap;
 
 	private Wealth() {
-
 	}
 
 	public Wealth(Long userId, Map<String, BigDecimal> wealthMap) {

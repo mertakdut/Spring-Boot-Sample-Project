@@ -17,9 +17,15 @@ class DatabaseMocker {
 			CreateNewUserRequest cnuRequest = new CreateNewUserRequest();
 			cnuRequest.setUsername("Mert");
 			cnuRequest.setPassword("mert123");
-			cnuRequest.setTcno("2141232212");
-			
+			cnuRequest.setTcno("2141232211");
+
+			CreateNewUserRequest cnuRequest2 = new CreateNewUserRequest();
+			cnuRequest2.setUsername("Mert2");
+			cnuRequest2.setPassword("mert1234");
+			cnuRequest2.setTcno("2141232212");
+
 			userController.createNewUser(cnuRequest);
+			userController.createNewUser(cnuRequest2);
 			// repository.save(new User("Bilbo Baggins", "burglar", "128185822"));
 			// repository.save(new User("Frodo Baggins", "thief", "21528582"));
 		};
