@@ -1,6 +1,7 @@
 package com.demo.bankapp.service.concretions;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class WealthService implements IWealthService {
 	private WealthRepository repository;
 
 	@Override
-	public void makeWealthTransaction(Long userId, String currency, BigDecimal amount, boolean isBuying) {
+	public void makeWealthExchange(Long userId, String currency, BigDecimal amount, boolean isBuying) {
 
 		Wealth userWealth = repository.findById(userId).orElseThrow(() -> new UserNotFoundException());
 		Map<String, BigDecimal> wealthMap = userWealth.getWealthMap();
@@ -32,7 +33,7 @@ public class WealthService implements IWealthService {
 		}
 
 		BigDecimal rate = new BigDecimal(getCurrencyRate(currency));
-		BigDecimal tryEquivalent = amount.multiply(rate);
+		BigDecimal tryEquivalent = amount.divide(rate, 9, RoundingMode.HALF_UP);
 
 		if (isBuying) {
 			if (tryEquivalent.compareTo(wealthMap.get("TRY")) == 1) { // Trying to buy more than he can.
@@ -50,6 +51,30 @@ public class WealthService implements IWealthService {
 		} else {
 			wealthMap.put(currency, wealthMap.get(currency).subtract(amount));
 			wealthMap.put("TRY", wealthMap.get("TRY").add(tryEquivalent));
+		}
+
+		userWealth.setWealthMap(wealthMap);
+		repository.save(userWealth);
+	}
+
+	@Override
+	public void makeWealthTransaction(Long userId, String currency, BigDecimal amount, boolean isIncrementing) {
+
+		Wealth userWealth = repository.findById(userId).orElseThrow(() -> new UserNotFoundException());
+		Map<String, BigDecimal> wealthMap = userWealth.getWealthMap();
+
+		if (!wealthMap.containsKey(currency)) {
+			throw new BadRequestException("Invalid currency.");
+		}
+
+		if (!isIncrementing) {
+			if (amount.compareTo(wealthMap.get(currency)) == 1) {
+				throw new InsufficientFundsException(currency);
+			}
+
+			wealthMap.put(currency, wealthMap.get(currency).subtract(amount));
+		} else {
+			wealthMap.put(currency, wealthMap.get(currency).add(amount));
 		}
 
 		userWealth.setWealthMap(wealthMap);

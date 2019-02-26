@@ -10,7 +10,9 @@ public interface IUserService {
 
 	List<User> findAll();
 	
-	User findByUserName(String findByUserName);
+	User findByUserName(String username);
+	
+	User findByTcno(String tcno);
 	
 	User addNewUser(CreateNewUserRequest request);
 	

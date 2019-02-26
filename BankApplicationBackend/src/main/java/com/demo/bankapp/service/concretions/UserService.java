@@ -55,4 +55,14 @@ public class UserService implements IUserService {
 			return user;
 	}
 
+	@Override
+	public User findByTcno(String tcno) {
+		User user = repository.findByTcno(tcno);
+
+		if (user == null)
+			throw new UserNotFoundException(tcno);
+		else
+			return user;
+	}
+
 }
