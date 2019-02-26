@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.demo.bankapp.assembler.TransactionAssembler;
+import com.demo.bankapp.assembler.TransactionResourceAssembler;
 import com.demo.bankapp.exception.BadRequestException;
 import com.demo.bankapp.exception.DailyOperationLimitReachedException;
 import com.demo.bankapp.model.Transaction;
@@ -27,7 +27,7 @@ import com.demo.bankapp.service.concretions.WealthService;
 public class TransactionController {
 
 	@Autowired
-	TransactionAssembler assembler;
+	TransactionResourceAssembler assembler;
 
 	@Autowired
 	TransactionService transactionService;
@@ -42,7 +42,7 @@ public class TransactionController {
 	public Resource<Transaction> makeTransaction(@RequestBody MakeTransactionRequest request) {
 
 		if (request == null || request.getUsername() == null || request.getUsername().equals("") || request.getCurrency() == null || request.getCurrency().equals("")
-				|| request.getAmount() == BigDecimal.ZERO || request.getCurrency().equals("TRY")) {
+				|| request.getAmount().equals(BigDecimal.ZERO) || request.getCurrency().equals("TRY")) {
 			throw new BadRequestException();
 		}
 
@@ -54,8 +54,8 @@ public class TransactionController {
 			throw new DailyOperationLimitReachedException();
 		}
 
-		userWealthService.makeWealthTransaction(user.getId(), request.getCurrency(), request.getAmount(), request.isBuying());
-		Transaction transaction = transactionService.createNewTransaction(user.getId(), request);
+		userWealthService.makeWealthExchange(user.getId(), request.getCurrency(), request.getAmount(), request.isBuying());
+		Transaction transaction = transactionService.createNewTransaction(user.getId(), request.isBuying(), request.getCurrency(), request.getAmount());
 
 		return assembler.toResource(transaction);
 	}

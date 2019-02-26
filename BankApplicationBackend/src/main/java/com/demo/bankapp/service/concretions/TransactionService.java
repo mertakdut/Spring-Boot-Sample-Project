@@ -1,11 +1,12 @@
 package com.demo.bankapp.service.concretions;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.demo.bankapp.model.Transaction;
 import com.demo.bankapp.repository.TransactionRepository;
-import com.demo.bankapp.request.MakeTransactionRequest;
 import com.demo.bankapp.service.abstractions.ITransactionService;
 
 @Service
@@ -15,8 +16,8 @@ public class TransactionService implements ITransactionService {
 	TransactionRepository repository;
 
 	@Override
-	public Transaction createNewTransaction(Long userId, MakeTransactionRequest request) {
-		Transaction transaction = new Transaction(userId, request.isBuying(), request.getCurrency(), request.getAmount());
+	public Transaction createNewTransaction(Long userId, boolean isBuying, String currency, BigDecimal amount) {
+		Transaction transaction = new Transaction(userId, isBuying, currency, amount);
 		return repository.save(transaction);
 	}
 
