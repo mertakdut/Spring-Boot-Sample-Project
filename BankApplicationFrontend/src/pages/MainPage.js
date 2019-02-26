@@ -25,7 +25,7 @@ class MainPage extends React.Component {
 
         this.state = {
             loggedInUsername: 'Mert',  // localStorage.getItem('liUsername'),
-            ownedCurrencies: [],
+            ownedCurrencies: null,
             isShowingPopup: false,
             popupTitle: 0,
             popupMessage: '',
@@ -45,6 +45,7 @@ class MainPage extends React.Component {
         request.post('wealth/retrieve', { username: this.state.loggedInUsername })
             .then((response) => {
                 console.log(response);
+                this.state.ownedCurrencies = [];
                 Object.keys(response.data.wealthMap).map((key) => {
                     if (response.data.wealthMap[key] == 0) delete response.data.wealthMap[key];
                 });
