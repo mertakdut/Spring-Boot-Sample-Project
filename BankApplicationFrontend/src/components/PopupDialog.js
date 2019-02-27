@@ -1,44 +1,54 @@
-import React from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import React from 'react'
+import { Modal, Button } from 'react-bootstrap'
+import { connect } from 'react-redux'
+import { closeDialog } from '../actions';
+
+const mapStateToProps = state => ({
+    show: state.dialog.isOpen,
+    title: state.dialog.title,
+    message: state.dialog.message
+})
+
+const mapDispatchToProps = dispatch => ({
+    onClose: () => dispatch(closeDialog)
+})
 
 class PopupDialog extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        this.handleShow = this.handleShow.bind(this);
-        this.handlePositive = this.handlePositive.bind(this);
-        this.handleNegative = this.handleNegative.bind(this);
-
-        this.state = {
-            show: true
-        };
+        // this.handlePositive = this.handlePositive.bind(this);
+        // this.handleNegative = this.handleNegative.bind(this);
     }
 
-    handlePositive() {
-        this.setState({ show: false });
-        this.props.callback(true);
+    componentDidMount() {
+        console.log(this.props.store);
     }
 
-    handleNegative() {
-        this.setState({ show: false });
-        this.props.callback(false);
-    }
+    // handlePositive() {
+    //     this.setState({ show: false });
+    //     this.props.callback(true);
+    // }
 
-    handleShow() {
-        this.setState({ show: true });
-    }
+    // handleNegative() {
+    //     this.setState({ show: false });
+    //     this.props.callback(false);
+    // }
 
     render() {
+
+        console.log(this.props.show);
+
         return (
             <div>
-                <Modal show={this.state.show} onHide={this.handleNegative}>
+                <Modal show={this.props.show} onHide={this.props.onClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>{this.props.title == 0 ? "Error" : this.props.title == 1 ? "Warning" : "Success"}</Modal.Title>
+                        <Modal.Title>{this.props.title}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>{this.props.message}</Modal.Body>
                     <Modal.Footer>
-                        {this.props.isAnswerable ? <Button variant="secondary" onClick={this.handleNegative}>No</Button> : null}
-                        <Button variant="primary" onClick={this.handlePositive}>{this.props.isAnswerable ? 'Yes' : 'Okay'}</Button>
+                        {this.props.isAnswerable ? <Button variant="secondary" onClick={this.props.onClose}>No</Button> : null}
+                        <Button variant="primary" onClick={this.props.onClose}>{this.props.isAnswerable ? 'Yes' : 'Okay'}</Button>
                     </Modal.Footer>
                 </Modal>
             </div>
@@ -46,4 +56,4 @@ class PopupDialog extends React.Component {
     }
 }
 
-export default PopupDialog;
+export default connect(mapStateToProps, mapDispatchToProps)(PopupDialog)

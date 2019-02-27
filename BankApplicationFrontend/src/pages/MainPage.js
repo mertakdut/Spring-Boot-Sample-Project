@@ -5,7 +5,7 @@ import NavBarTop from '../components/NavigationBar';
 
 import HomePage from './inner/HomePage';
 import UsersPage from './inner/UsersPage';
-import CurrencyPage from './inner/CurrencyPage';
+import CurrencyPage from './CurrencyPage/CurrencyPage';
 import TransferPage from './inner/TransferPage';
 import HistoryPage from './inner/HistoryPage';
 
@@ -14,9 +14,16 @@ import LoginPage from './inner/LoginPage';
 
 import { Container } from 'react-bootstrap'
 import MoneyBar from '../components/MoneyBar';
-import PopupDialog from '../components/PopupDialog';
+
+import { showDialog } from '../actions';
 
 import Request from '../services/Request'
+import { connect } from 'react-redux'
+import PopupDialog from '../components/PopupDialog';
+
+const mapDispatchToProps = dispatch => ({
+    showPopup: (title, message) => dispatch(showDialog(title, message))
+})
 
 class MainPage extends React.Component {
 
@@ -25,18 +32,10 @@ class MainPage extends React.Component {
 
         this.state = {
             loggedInUsername: localStorage.getItem('username'),
-            ownedCurrencies: null,
-            isShowingPopup: false,
-            popupTitle: 0,
-            popupMessage: '',
+            ownedCurrencies: null
         };
 
         this.retrieveWealthAndUpdateState = this.retrieveWealthAndUpdateState.bind(this);
-        this.onLoginStatusChanged = this.onLoginStatusChanged.bind(this);
-    }
-
-    onLoginStatusChanged() {
-
     }
 
     componentDidMount() {
@@ -58,19 +57,17 @@ class MainPage extends React.Component {
                 console.log(this.state.ownedCurrencies);
             }).catch((error) => {
                 console.log(error);
-                var errorMessage = 'Network error';
+                var errorMessage = 'Network error.';
                 if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
                     errorMessage = error.response.data.message;
                 }
-                this.setState({ isShowingPopup: true, popupTitle: 0, popupMessage: errorMessage });
+                this.props.showPopup("Error", errorMessage);
             });
+
+        // console.log(this.props.getSomething("Mert", "It works!"));
     }
 
     render() {
-
-        const popupDialog = this.state.isShowingPopup ?
-            <PopupDialog callback={() => this.setState({ isShowingPopup: false })} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
-            : null;
 
         const moneyBar = this.state.loggedInUsername != null ?
             <MoneyBar username={this.state.loggedInUsername} ownedCurrencies={this.state.ownedCurrencies} />
@@ -79,9 +76,9 @@ class MainPage extends React.Component {
         return (
             <Router>
                 <div>
-                    {popupDialog}
                     <NavBarTop loggedInUsername={this.state.loggedInUsername} />
                     <Container>
+                        <PopupDialog />
                         {moneyBar}
                         <Route exact path="/" component={HomePage} />
                         <Route exact path="/users" component={UsersPage} />
@@ -97,4 +94,4 @@ class MainPage extends React.Component {
     }
 }
 
-export default MainPage;
+export default connect(null, mapDispatchToProps)(MainPage);
