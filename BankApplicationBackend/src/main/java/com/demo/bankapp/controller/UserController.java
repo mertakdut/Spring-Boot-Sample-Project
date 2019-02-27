@@ -43,9 +43,16 @@ public class UserController {
 	@PostMapping("/new")
 	public Resource<User> createNewUser(@RequestBody CreateNewUserRequest request) {
 
-		if (request == null || request.getUsername() == null || request.getPassword() == null || request.getTcno() == null || request.getUsername().equals("")
-				|| request.getPassword().equals("") || request.getTcno().equals("")) {
+		if (request == null) {
 			throw new BadRequestException();
+		}
+
+		if (request.getUsername() == null || request.getUsername().equals("") || request.getPassword() == null || request.getPassword().equals("")) {
+			throw new BadRequestException("Invalid credentials.");
+		}
+
+		if (request.getTcno() == null || request.getTcno().equals("")) {
+			throw new BadRequestException("Invalid TC No.");
 		}
 
 		User user = userService.addNewUser(request);
@@ -57,8 +64,12 @@ public class UserController {
 	@PostMapping("/login")
 	public Resource<User> login(@RequestBody LoginRequest request) {
 
-		if (request == null || request.getUsername() == null || request.getPassword() == null || request.getUsername().equals("") || request.getPassword().equals("")) {
+		if (request == null) {
 			throw new BadRequestException();
+		}
+
+		if (request.getUsername() == null || request.getUsername().equals("") || request.getPassword() == null || request.getPassword().equals("")) {
+			throw new BadRequestException("Invalid credentials.");
 		}
 
 		User user = userService.login(request);

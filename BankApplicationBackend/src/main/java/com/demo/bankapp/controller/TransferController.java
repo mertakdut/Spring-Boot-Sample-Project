@@ -43,9 +43,20 @@ public class TransferController {
 	@PostMapping("/make")
 	public Resource<Transfer> makeTransfer(@RequestBody MakeTransferRequest request) {
 
-		if (request == null || request.getSenderUsername() == null || request.getSenderUsername().equals("") || request.getReceiverTcno() == null
-				|| request.getReceiverTcno().equals("") || request.getCurrency() == null || request.getCurrency().equals("") || request.getAmount().equals(BigDecimal.ZERO)) {
+		if (request == null || request.getCurrency() == null || request.getCurrency().equals("")) {
 			throw new BadRequestException();
+		}
+
+		if (request.getSenderUsername() == null || request.getSenderUsername().equals("")) {
+			throw new BadRequestException("User not found.");
+		}
+
+		if (request.getReceiverTcno() == null || request.getReceiverTcno().equals("")) {
+			throw new BadRequestException("Invalid TCNo.");
+		}
+
+		if (request.getAmount().signum() == 0 || request.getAmount().signum() == -1) {
+			throw new BadRequestException("Please enter a valid amount.");
 		}
 
 		User senderUser = userService.findByUserName(request.getSenderUsername());

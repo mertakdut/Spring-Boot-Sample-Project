@@ -44,15 +44,21 @@ public class TransactionController {
 	@PostMapping("/make")
 	public Resource<Transaction> makeTransaction(@RequestBody MakeTransactionRequest request) {
 
-		if (request == null || request.getUsername() == null || request.getUsername().equals("") || request.getCurrency() == null || request.getCurrency().equals("")
-				|| request.getAmount().equals(BigDecimal.ZERO) || request.getCurrency().equals("TRY")) {
+		if (request == null || request.getUsername() == null || request.getUsername().equals("") || request.getCurrency() == null || request.getCurrency().equals("")) {
 			throw new BadRequestException();
+		}
+
+		if (request.getAmount().signum() == 0 || request.getAmount().signum() == -1) {
+			throw new BadRequestException("Invalid amount.");
+		}
+
+		if (request.getCurrency().equals("TRY")) {
+			throw new BadRequestException("You can't make transactions with TRY.");
 		}
 
 		User user = userService.findByUserName(request.getUsername());
 
 		int last24HoursOperationCount = transactionService.getOperationCountFromLast24Hours(user.getId());
-
 		if (last24HoursOperationCount >= 10) {
 			throw new DailyOperationLimitReachedException();
 		}
@@ -62,7 +68,7 @@ public class TransactionController {
 
 		return assembler.toResource(transaction);
 	}
-	
+
 	@GetMapping("/findAll")
 	public List<Resource<Transaction>> findAll() {
 		return transactionService.findAll().stream().map(assembler::toResource).collect(Collectors.toList());

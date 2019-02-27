@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.bankapp.assembler.WealthResourceAssembler;
+import com.demo.bankapp.exception.BadRequestException;
 import com.demo.bankapp.model.User;
 import com.demo.bankapp.model.Wealth;
 import com.demo.bankapp.request.RetrieveWealthRequest;
@@ -32,6 +33,15 @@ public class WealthController {
 
 	@PostMapping("/retrieve")
 	public Resource<Wealth> retrieveWealth(@RequestBody RetrieveWealthRequest request) {
+
+		if (request == null) {
+			throw new BadRequestException();
+		}
+
+		if (request.getUsername() == null || request.getUsername().equals("")) {
+			throw new BadRequestException("Invalid username.");
+		}
+
 		User user = userService.findByUserName(request.getUsername());
 		Wealth wealth = wealthService.findWealth(user.getId());
 		return assembler.toResource(wealth);
