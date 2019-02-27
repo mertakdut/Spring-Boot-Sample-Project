@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'react-bootstrap';
+import { Table, Jumbotron } from 'react-bootstrap';
 import Request from '../../services/Request';
 import PopupDialog from '../../components/PopupDialog';
 import Moment from 'react-moment';
@@ -10,6 +10,7 @@ class HistoryPage extends React.Component {
         super(props);
         this.state = {
             histories: [],
+            isDoneLoadingHistories: false,
             isShowingPopup: false
         };
     }
@@ -27,6 +28,8 @@ class HistoryPage extends React.Component {
                     errorMessage = error.response.data.message;
                 }
                 this.setState({ isShowingPopup: true, popupTitle: 0, popupMessage: errorMessage });
+            }).finally(() => {
+                this.setState({ isDoneLoadingHistories: true });
             });
     }
 
@@ -36,19 +39,39 @@ class HistoryPage extends React.Component {
             <PopupDialog callback={() => this.setState({ isShowingPopup: false })} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
             : null;
 
+        const bestory = this.state.isDoneLoadingHistories ? this.state.histories != null && Object.keys(this.state.histories).length !== 0 ?
+            <HistoryList histories={this.state.histories} /> : <EmptyListWrapper /> : null;
+
         return (
             <div>
                 {popupDialog}
-                <HistoryList histories={this.state.histories} />
+                {bestory}
             </div>
         )
     }
 }
 
+class EmptyListWrapper extends React.Component {
+
+    render() {
+        return (
+            <Jumbotron>
+                <h1>No Transaction Records Found!</h1>
+                <p>
+                    I wish I could show you some data over here... But apparently none found either in database
+                    (*cough*mocked*cough*) -please excuse my 'phlegm'-
+                    a there's a real problem about the connection.
+                </p>
+            </Jumbotron>
+        )
+    }
+
+}
+
 class HistoryList extends React.Component {
     render() {
         const histories = this.props.histories.map((history, index) =>
-            <History key={history.id} history={history} index={index} /> // key={user.links.self.href}
+            <History key={history.id} history={history} index={index} />
         );
         return (
             <Table striped bordered hover>
