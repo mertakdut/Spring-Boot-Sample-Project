@@ -26,7 +26,6 @@ public class UserService implements IUserService {
 
 	@Override
 	public User addNewUser(CreateNewUserRequest request) {
-		// TODO: Mapper.
 		User user = new User(request.getUsername(), request.getPassword(), request.getTcno());
 		return repository.save(user);
 	}

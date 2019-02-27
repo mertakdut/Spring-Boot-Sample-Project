@@ -1,6 +1,7 @@
 package com.demo.bankapp.controller;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class UserController {
 			throw new BadRequestException("Invalid credentials.");
 		}
 
-		if (request.getTcno() == null || request.getTcno().equals("")) {
+		if (request.getTcno() == null || request.getTcno().length() != 11 || !isNumeric(request.getTcno())) {
 			throw new BadRequestException("Invalid TC No.");
 		}
 
@@ -74,6 +75,10 @@ public class UserController {
 
 		User user = userService.login(request);
 		return assembler.toResource(user);
+	}
+
+	private boolean isNumeric(String str) {
+		return Pattern.matches("[0-9]+", str);
 	}
 
 }
