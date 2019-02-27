@@ -2,6 +2,8 @@ import React from 'react';
 import { Form, Button } from 'react-bootstrap';
 import FormElement from '../../components/FormElement';
 import PopupDialog from '../../components/PopupDialog';
+import Request from '../../services/Request';
+import { Redirect } from 'react-router-dom';
 
 const ERROR_ALLFIELDSMANDATORY = 'All fields are mandatory.';
 
@@ -16,7 +18,8 @@ class LoginPage extends React.Component {
             isShowingPopup: false,
             popupMessage: '',
             popupTitle: '',
-            isProcessingLogin: false
+            isProcessingLogin: false,
+            isLoggedIn: false
         }
 
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
@@ -59,7 +62,8 @@ class LoginPage extends React.Component {
                 password: this.state.password
             }).then((response) => {
                 console.log(response);
-                this.setState({ isShowingPopup: true, popupTitle: 2, popupMessage: SUCCESS_REGISTER });
+                localStorage.setItem('username', response.data.username);
+                this.setState({ isLoggedIn: true });
             }).catch((error) => {
                 console.log(error);
                 var errorMessage = 'Network error';
@@ -71,7 +75,7 @@ class LoginPage extends React.Component {
                 this.resetFields();
                 this.setState({
                     isProcessingLogin: false
-                })
+                });
             });
         }
     }
@@ -87,6 +91,10 @@ class LoginPage extends React.Component {
 
         if (this.state.isShowingPopup) {
             return <PopupDialog callback={this.onPopupClosed} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
+        }
+
+        if (!this.state.isProcessingLogin && this.state.isLoggedIn) {
+            return <Redirect to='/' />;
         }
 
         let formStyle = {

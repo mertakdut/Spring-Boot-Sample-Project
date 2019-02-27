@@ -24,7 +24,7 @@ class MainPage extends React.Component {
         super(props);
 
         this.state = {
-            loggedInUsername: 'Mert',  // localStorage.getItem('liUsername'),
+            loggedInUsername: localStorage.getItem('username'),
             ownedCurrencies: null,
             isShowingPopup: false,
             popupTitle: 0,
@@ -32,6 +32,11 @@ class MainPage extends React.Component {
         };
 
         this.retrieveWealthAndUpdateState = this.retrieveWealthAndUpdateState.bind(this);
+        this.onLoginStatusChanged = this.onLoginStatusChanged.bind(this);
+    }
+
+    onLoginStatusChanged() {
+
     }
 
     componentDidMount() {
@@ -75,7 +80,7 @@ class MainPage extends React.Component {
             <Router>
                 <div>
                     {popupDialog}
-                    <NavBarTop isUserLoggedIn={this.state.loggedInUsername} />
+                    <NavBarTop loggedInUsername={this.state.loggedInUsername} />
                     <Container>
                         {moneyBar}
                         <Route exact path="/" component={HomePage} />
