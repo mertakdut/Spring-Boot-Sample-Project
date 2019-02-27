@@ -1,9 +1,5 @@
 package com.demo.bankapp.controller;
 
-import java.math.BigDecimal;
-
-import javax.validation.constraints.NotNull;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.MediaType;
@@ -15,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.bankapp.assembler.TransferResourceAssembler;
 import com.demo.bankapp.exception.BadRequestException;
-import com.demo.bankapp.model.Transaction;
 import com.demo.bankapp.model.Transfer;
 import com.demo.bankapp.model.User;
 import com.demo.bankapp.request.MakeTransferRequest;

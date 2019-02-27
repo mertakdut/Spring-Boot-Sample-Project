@@ -28,8 +28,8 @@ public class TransactionService implements ITransactionService {
 	}
 
 	@Override
-	public List<Transaction> findAll() {
-		return repository.findAll();
+	public List<Transaction> findAllByUserId(Long userId) {
+		return repository.findAllByUserId(userId);
 	}
 
 }

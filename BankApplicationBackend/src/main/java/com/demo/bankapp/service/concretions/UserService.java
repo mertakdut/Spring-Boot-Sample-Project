@@ -59,7 +59,7 @@ public class UserService implements IUserService {
 		User user = repository.findByTcno(tcno);
 
 		if (user == null)
-			throw new UserNotFoundException(tcno);
+			throw new UserNotFoundException("with TC No: " + tcno);
 		else
 			return user;
 	}

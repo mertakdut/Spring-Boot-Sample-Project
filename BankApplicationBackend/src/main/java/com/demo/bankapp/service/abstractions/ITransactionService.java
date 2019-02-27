@@ -11,6 +11,6 @@ public interface ITransactionService {
 
 	int getOperationCountFromLast24Hours(Long userId);
 
-	List<Transaction> findAll();
+	List<Transaction> findAllByUserId(Long userId);
 
 }

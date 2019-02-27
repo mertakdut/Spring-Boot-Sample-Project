@@ -1,6 +1,5 @@
 package com.demo.bankapp.controller;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +17,7 @@ import com.demo.bankapp.exception.BadRequestException;
 import com.demo.bankapp.exception.DailyOperationLimitReachedException;
 import com.demo.bankapp.model.Transaction;
 import com.demo.bankapp.model.User;
+import com.demo.bankapp.request.FindAllByUserRequest;
 import com.demo.bankapp.request.MakeTransactionRequest;
 import com.demo.bankapp.service.concretions.TransactionService;
 import com.demo.bankapp.service.concretions.UserService;
@@ -44,11 +43,19 @@ public class TransactionController {
 	@PostMapping("/make")
 	public Resource<Transaction> makeTransaction(@RequestBody MakeTransactionRequest request) {
 
-		if (request == null || request.getUsername() == null || request.getUsername().equals("") || request.getCurrency() == null || request.getCurrency().equals("")) {
+		if (request == null) {
 			throw new BadRequestException();
 		}
 
-		if (request.getAmount().signum() == 0 || request.getAmount().signum() == -1) {
+		if (request.getUsername() == null || request.getUsername().equals("")) {
+			throw new BadRequestException("Invalid username.");
+		}
+
+		if (request.getCurrency() == null || request.getCurrency().equals("")) {
+			throw new BadRequestException("Invalid currency.");
+		}
+
+		if (request.getAmount() != null && request.getAmount().signum() == 0 || request.getAmount().signum() == -1) {
 			throw new BadRequestException("Invalid amount.");
 		}
 
@@ -69,9 +76,19 @@ public class TransactionController {
 		return assembler.toResource(transaction);
 	}
 
-	@GetMapping("/findAll")
-	public List<Resource<Transaction>> findAll() {
-		return transactionService.findAll().stream().map(assembler::toResource).collect(Collectors.toList());
+	@PostMapping("/findAllByUsername")
+	public List<Resource<Transaction>> findAllByUsername(@RequestBody FindAllByUserRequest request) {
+
+		if (request == null) {
+			throw new BadRequestException();
+		}
+
+		if (request.getUsername() == null || request.getUsername().equals("")) {
+			throw new BadRequestException("Invalid username.");
+		}
+
+		User user = userService.findByUserName(request.getUsername());
+		return transactionService.findAllByUserId(user.getId()).stream().map(assembler::toResource).collect(Collectors.toList());
 	}
 
 }
