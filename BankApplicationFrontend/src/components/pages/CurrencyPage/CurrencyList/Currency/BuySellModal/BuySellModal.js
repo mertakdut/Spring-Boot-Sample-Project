@@ -1,7 +1,8 @@
-import React from 'react';
-import NumberFormat from 'react-number-format';
-import { Modal, InputGroup, FormControl, Button } from 'react-bootstrap';
-import Request from '../../../../../services/Request';
+import React from 'react'
+import NumberFormat from 'react-number-format'
+import { Modal, InputGroup, FormControl, Button } from 'react-bootstrap'
+import Request from '../../../../../../services/Request'
+import {URL_MAKETRANSACTION} from '../../../../../../config/constants'
 
 class BuySellModal extends React.Component {
 
@@ -32,7 +33,7 @@ class BuySellModal extends React.Component {
         });
 
         const request = new Request().getRequestInstance();
-        request.post('transaction/make',
+        request.post(URL_MAKETRANSACTION,
             {
                 username: this.props.username,
                 buying: this.props.isBuying,

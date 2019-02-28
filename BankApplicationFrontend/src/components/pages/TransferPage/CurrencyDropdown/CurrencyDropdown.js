@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
-import Request from '../../../services/Request';
+import Request from '../../../../services/Request';
 import CurrencyDropdownItem from './CurrencyDropdownItem/CurrencyDropdownItem'
 
 class CurrencyDropdown extends React.Component {
@@ -11,6 +11,10 @@ class CurrencyDropdown extends React.Component {
         this.state = {
             currencies: []
         }
+    }
+
+    onPickCurrency() {
+        this.props.onDropdownChanged(this.inputEl.value);
     }
 
     componentDidMount() {
@@ -30,7 +34,8 @@ class CurrencyDropdown extends React.Component {
         );
 
         return (
-            <Form.Control as="select">
+            <Form.Control as="select" onChange={this.onPickCurrency.bind(this)} ref={el => this.inputEl = el}>
+                <option value="">Select</option>
                 {currencies}
             </Form.Control>
         )

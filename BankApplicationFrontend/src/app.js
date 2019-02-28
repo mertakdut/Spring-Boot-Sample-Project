@@ -3,7 +3,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import MainPage from './pages/MainPage/MainPage';
+import MainPage from './components/pages/MainPage/MainPage';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 

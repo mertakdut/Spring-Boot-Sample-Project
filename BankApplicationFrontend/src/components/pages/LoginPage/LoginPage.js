@@ -1,13 +1,11 @@
-import React from 'react';
-import { Form, Button } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import React from 'react'
+import { Form, Button } from 'react-bootstrap'
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-
-import FormElement from '../../components/FormElement/FormElement';
-import Request from '../../services/Request';
-import { login, showDialog } from '../../actions';
-
-const ERROR_ALLFIELDSMANDATORY = 'All fields are mandatory.';
+import FormElement from '../../FormElement/FormElement'
+import Request from '../../../services/Request'
+import { login, showDialog } from '../../../actions'
+import { ERROR_ALLFIELDSMANDATORY, URL_LOGIN, LSKEY_USERNAME } from '../../../config/constants'
 
 const mapStateToProps = state => ({
     isLoggedIn: state.login != null
@@ -51,12 +49,12 @@ class LoginPage extends React.Component {
             });
 
             const request = new Request().getRequestInstance();
-            request.post('user/login', {
+            request.post(URL_LOGIN, {
                 username: this.state.username,
                 password: this.state.password
             }).then((response) => {
                 console.log(response);
-                localStorage.setItem('username', response.data.username);
+                localStorage.setItem(LSKEY_USERNAME, response.data.username);
                 this.setState({ isLoggedIn: true });
             }).catch((error) => {
                 console.log(error);

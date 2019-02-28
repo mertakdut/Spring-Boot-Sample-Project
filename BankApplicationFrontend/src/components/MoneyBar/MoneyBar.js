@@ -1,9 +1,9 @@
 import React from 'react';
 import { Alert } from 'react-bootstrap'
 import { connect } from 'react-redux'
-
 import Request from '../../services/Request'
 import { showDialog, currenciesUptodate } from '../../actions';
+import { URL_RETRIEVEWEALTH } from '../../config/constants'
 
 const mapStateToProps = state => ({
     loggedInUsername: state.login,
@@ -46,7 +46,7 @@ class MoneyBar extends React.Component {
             this.setState({ isProcessing: true });
 
             const request = new Request().getRequestInstance();
-            request.post('wealth/retrieve', { username: this.props.loggedInUsername })
+            request.post(URL_RETRIEVEWEALTH, { username: this.props.loggedInUsername })
                 .then((response) => {
                     Object.keys(response.data.wealthMap).map((key) => {
                         if (response.data.wealthMap[key] == 0) delete response.data.wealthMap[key];

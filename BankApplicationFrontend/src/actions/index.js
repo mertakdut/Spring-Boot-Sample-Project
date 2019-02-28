@@ -1,30 +1,36 @@
-// TODO: Soft-coded action types.
-// export const ADD_TODO = 'ADD_TODO'
+import {
+    ACTIONTYPE_SHOWDIALOG,
+    ACTIONTYPE_HIDEDIALOG,
+    ACTIONTYPE_LOGIN,
+    ACTIONTYPE_LOGOUT,
+    ACTIONTYPE_CURRENCIESOBSOLETE,
+    ACTIONTYPE_CURRENCIESUPTODATE
+} from '../config/constants'
 
 export const showDialog = (titleEnum, message, callback) => ({
-    type: 'SHOW_DIALOG',
+    type: ACTIONTYPE_SHOWDIALOG,
     titleEnum,
     message,
     callback
 })
 
 export const closeDialog = {
-    type: 'HIDE_DIALOG'
+    type: ACTIONTYPE_HIDEDIALOG
 }
 
 export const login = (username) => ({
-    type: 'LOGIN',
+    type: ACTIONTYPE_LOGIN,
     username
 })
 
 export const logout = {
-    type: 'LOGOUT'
+    type: ACTIONTYPE_LOGOUT
 }
 
 export const currenciesObsolete = {
-    type: 'CURRENCIES_OBSOLETE'
+    type: ACTIONTYPE_CURRENCIESOBSOLETE
 }
 
 export const currenciesUptodate = {
-    type: 'CURRENCIES_UPTODATE'
+    type: ACTIONTYPE_CURRENCIESUPTODATE
 }

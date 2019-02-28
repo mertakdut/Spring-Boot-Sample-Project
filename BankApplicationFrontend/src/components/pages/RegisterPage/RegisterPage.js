@@ -2,13 +2,10 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import { connect } from 'react-redux'
-import FormElement from '../../components/FormElement/FormElement';
-import Request from '../../services/Request';
-import { login, showDialog } from '../../actions';
-
-const ERROR_ALLFIELDSMANDATORY = 'All fields are mandatory.';
-const ERROR_DIFFPASS = 'Password fields should be same.';
-const ERROR_TCNOLENGTH = 'Length of TC No must be 11. Currently it is: ';
+import FormElement from '../../FormElement/FormElement';
+import Request from '../../../services/Request';
+import { ERROR_ALLFIELDSMANDATORY, ERROR_DIFFPASS, ERROR_TCNOLENGTH, URL_REGISTER, LSKEY_USERNAME } from '../../../config/constants'
+import { login, showDialog } from '../../../actions';
 
 const mapStateToProps = state => ({
     isLoggedIn: state.login != null
@@ -59,7 +56,7 @@ class RegisterPage extends React.Component {
 
         if (this.state.firstPass != this.state.secondPass) {
             this.props.showPopup(1, ERROR_DIFFPASS);
-        } else if (this.state.username == '' || this.tcno == '' || this.state.firstPass == '') {
+        } else if (this.state.username == '' || this.state.tcno == '' || this.state.firstPass == '') {
             this.props.showPopup(1, ERROR_ALLFIELDSMANDATORY);
         } else if (this.state.tcno.length != 11) {
             this.props.showPopup(1, ERROR_TCNOLENGTH + this.state.tcno.length);
@@ -70,14 +67,14 @@ class RegisterPage extends React.Component {
             });
 
             const request = new Request().getRequestInstance();
-            request.post('user/new', {
+            request.post(URL_REGISTER, {
                 username: this.state.username,
                 password: this.state.firstPass,
                 tcno: this.state.tcno
             }).then((response) => {
                 console.log(response);
-                localStorage.setItem('username', response.data.username);
-                this.props.login(localStorage.getItem('username'));
+                localStorage.setItem(LSKEY_USERNAME, response.data.username);
+                this.props.login(localStorage.getItem(LSKEY_USERNAME));
             }).catch((error) => {
                 console.log(error);
                 var errorMessage = 'Network error';

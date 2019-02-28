@@ -7,5 +7,4 @@ export default combineReducers({
     dialog,
     login,
     currencies
-
 })

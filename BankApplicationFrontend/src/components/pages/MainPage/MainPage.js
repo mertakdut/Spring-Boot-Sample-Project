@@ -3,21 +3,21 @@ import { Container } from 'react-bootstrap'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import NavBarTop from '../../components/NavigationBar/NavigationBar';
-import PopupDialog from '../../components/PopupDialog/PopupDialog';
+import NavBarTop from '../../NavigationBar/NavigationBar'
+import PopupDialog from '../../PopupDialog/PopupDialog'
+import MoneyBar from '../../MoneyBar/MoneyBar'
 
-import HomePage from '../HomePage/HomePage';
-import UsersPage from '../UsersPage/UsersPage';
-import CurrencyPage from '../CurrencyPage/CurrencyPage';
-import TransferPage from '../TransferPage/TransferPage';
-import HistoryPage from '../HistoryPage/HistoryPage';
+import HomePage from '../HomePage/HomePage'
+import UsersPage from '../UsersPage/UsersPage'
+import CurrencyPage from '../CurrencyPage/CurrencyPage'
+import TransferPage from '../TransferPage/TransferPage'
+import HistoryPage from '../HistoryPage/HistoryPage'
 
-import RegisterPage from '../RegisterPage/RegisterPage';
-import LoginPage from '../LoginPage/LoginPage';
+import RegisterPage from '../RegisterPage/RegisterPage'
+import LoginPage from '../LoginPage/LoginPage'
 
-import MoneyBar from '../../components/MoneyBar/MoneyBar';
-
-import { login } from '../../actions';
+import { login } from '../../../actions'
+import { LSKEY_USERNAME } from '../../../config/constants'
 
 const mapDispatchToProps = dispatch => ({
     login: (username) => dispatch(login(username))
@@ -28,7 +28,7 @@ class MainPage extends React.Component {
     constructor(props) {
         super(props);
 
-        const storedUsername = localStorage.getItem('username');
+        const storedUsername = localStorage.getItem(LSKEY_USERNAME);
         if (storedUsername != null) {
             this.props.login(storedUsername);
         }

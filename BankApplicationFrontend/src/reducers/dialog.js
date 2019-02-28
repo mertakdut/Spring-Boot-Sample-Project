@@ -1,3 +1,5 @@
+import { ACTIONTYPE_SHOWDIALOG, ACTIONTYPE_HIDEDIALOG } from '../config/constants'
+
 const initialState = {
     isOpen: false,
     titleEnum: '',
@@ -6,14 +8,14 @@ const initialState = {
 
 const dialog = (state = initialState, action) => {
     switch (action.type) {
-        case 'SHOW_DIALOG':
+        case ACTIONTYPE_SHOWDIALOG:
             return Object.assign({}, state, {
                 isOpen: true,
                 titleEnum: action.titleEnum,
                 message: action.message,
                 callback: action.callback
             })
-        case 'HIDE_DIALOG':
+        case ACTIONTYPE_HIDEDIALOG:
             return Object.assign({}, state, {
                 isOpen: false,
                 titleEnum: '',

@@ -1,7 +1,8 @@
-import React from 'react';
+import React from 'react'
 import { connect } from 'react-redux'
-import Request from '../../services/Request'
-import { showDialog } from '../../actions';
+import { showDialog } from '../../../actions'
+import Request from '../../../services/Request';
+import { URL_RETRIEVEHISTORY } from '../../../config/constants'
 import EmptyListWrapper from './EmptyListWrapper/EmptyListWrapper'
 import HistoryList from './HistoryList/HistoryList'
 
@@ -30,7 +31,7 @@ class HistoryPage extends React.Component {
             this.setState({ isRetrievingRecords: true });
 
             const request = new Request().getRequestInstance();
-            request.post('transaction/findAllByUsername', {
+            request.post(URL_RETRIEVEHISTORY, {
                 username: this.props.loggedInUsername
             }).then((response) => {
                 console.log(response);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ButtonToolbar, Button } from 'react-bootstrap';
 import { connect } from 'react-redux'
-import { showDialog, currenciesObsolete } from '../../../../actions';
+import { showDialog, currenciesObsolete } from '../../../../../actions';
 
 import BuySellModal from './BuySellModal/BuySellModal'
 

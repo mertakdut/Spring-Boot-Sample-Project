@@ -1,9 +1,9 @@
-import React from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import React from 'react'
+import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Navbar, Nav, NavItem } from 'react-bootstrap';
-
-import { showDialog, logout } from '../../actions';
+import { Navbar, Nav, NavItem } from 'react-bootstrap'
+import { showDialog, logout } from '../../actions'
+import { LSKEY_USERNAME } from '../../config/constants'
 
 const mapStateToProps = state => ({
     loggedInUsername: state.login
@@ -34,7 +34,7 @@ class NavBarTop extends React.Component {
     }
 
     onLoggedOut() {
-        localStorage.removeItem('username');
+        localStorage.removeItem(LSKEY_USERNAME);
         this.props.logout();
         this.setState({ hasJustLoggedOut: true });
     }
@@ -46,11 +46,10 @@ class NavBarTop extends React.Component {
             return <Redirect to="/" />
         }
 
-
         const loginLogout = this.props.loggedInUsername == null ?
             <NavItem style={navbarStyling} componentclass="span"><Link to="/login">Login</Link></NavItem> :
             <NavItem style={navbarStyling} onClick={() =>
-                this.props.showPopup(1, 'Are sure you want to logout ' + this.props.loggedInUsername + '?', this.onLoggedOut())}>Logout</NavItem>
+                this.props.showPopup(1, 'Are sure you want to logout ' + this.props.loggedInUsername + '?', this.onLoggedOut)}>Logout</NavItem>
 
         return (
             <Navbar bg="light" expand="lg" >

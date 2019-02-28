@@ -1,8 +1,10 @@
+import { ACTIONTYPE_LOGIN, ACTIONTYPE_LOGOUT } from '../config/constants'
+
 const login = (state = null, action) => {
     switch (action.type) {
-        case 'LOGIN':
+        case ACTIONTYPE_LOGIN:
             return action.username;
-        case 'LOGOUT':
+        case ACTIONTYPE_LOGOUT:
             return null;
         default:
             return state;
