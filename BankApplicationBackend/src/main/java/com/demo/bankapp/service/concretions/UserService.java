@@ -3,13 +3,13 @@ package com.demo.bankapp.service.concretions;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.demo.bankapp.exception.BadCredentialsException;
 import com.demo.bankapp.exception.UserNotFoundException;
 import com.demo.bankapp.model.User;
 import com.demo.bankapp.repository.UserRepository;
-import com.demo.bankapp.request.LoginRequest;
 import com.demo.bankapp.service.abstractions.IUserService;
 
 @Service
@@ -18,6 +18,9 @@ public class UserService implements IUserService {
 	@Autowired
 	private UserRepository repository;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	@Override
 	public List<User> findAll() {
 		return repository.findAll();
@@ -25,17 +28,17 @@ public class UserService implements IUserService {
 
 	@Override
 	public User createNewUser(User user) {
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		return repository.save(user);
 	}
 
 	@Override
-	public User login(LoginRequest request) {
+	public User login(String username, String password) {
 
-		User user = findByUserName(request.getUsername());
+		User user = findByUserName(username);
+		String encodedPassword = passwordEncoder.encode(password);
 
-		// TODO: Encoding.
-		// TODO: Stop timing attacks.
-		if (user.getPassword() == null || !user.getPassword().equals(request.getPassword())) {
+		if (!encodedPassword.equals(user.getPassword())) {
 			throw new BadCredentialsException();
 		}
 
@@ -61,5 +64,18 @@ public class UserService implements IUserService {
 		else
 			return user;
 	}
+
+	// Avoid timing attacks?
+	// private boolean isEqual(byte[] a, byte[] b) {
+	// if (a.length != b.length) {
+	// return false;
+	// }
+	//
+	// int result = 0;
+	// for (int i = 0; i < a.length; i++) {
+	// result |= a[i] ^ b[i];
+	// }
+	// return result == 0;
+	// }
 
 }

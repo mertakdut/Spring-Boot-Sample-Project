@@ -73,7 +73,7 @@ public class UserController {
 			throw new BadRequestException("Invalid credentials.");
 		}
 
-		User user = userService.login(request);
+		User user = userService.login(request.getUsername(), request.getPassword());
 		return assembler.toResource(user);
 	}
 
