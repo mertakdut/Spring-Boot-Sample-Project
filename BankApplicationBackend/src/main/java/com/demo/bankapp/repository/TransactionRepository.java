@@ -12,7 +12,7 @@ import com.demo.bankapp.model.Transaction;
 @RepositoryRestResource(exported = false)
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-	@Query(value = "SELECT COUNT(*) FROM Transaction WHERE transactionTime >= DATEADD(day, -1, GETDATE())")
+	@Query(value = "SELECT COUNT(*) FROM Transaction WHERE userId = :userId and transactionTime >= DATEADD(day, -1, GETDATE())")
 	int getOperationCountFromLast24Hours(@Param("userId") Long userId);
 	
 	List<Transaction> findAllByUserId(Long userId);
