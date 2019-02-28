@@ -3,7 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux'
 
-import FormElement from '../../components/FormElement';
+import FormElement from '../../components/FormElement/FormElement';
 import Request from '../../services/Request';
 import { login, showDialog } from '../../actions';
 

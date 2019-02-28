@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import { connect } from 'react-redux'
-import FormElement from '../../components/FormElement';
+import FormElement from '../../components/FormElement/FormElement';
 import Request from '../../services/Request';
 import { login, showDialog } from '../../actions';
 
@@ -37,7 +37,6 @@ class RegisterPage extends React.Component {
         this.handleFirstPasswordChange = this.handleFirstPasswordChange.bind(this);
         this.handleSecondPasswordChange = this.handleSecondPasswordChange.bind(this);
         this.handleTcNoChange = this.handleTcNoChange.bind(this);
-        this.resetFields = this.resetFields.bind(this);
     }
 
     handleUsernameChange(e) {
@@ -54,15 +53,6 @@ class RegisterPage extends React.Component {
 
     handleSecondPasswordChange(e) {
         this.setState({ secondPass: e.target.value });
-    }
-
-    resetFields() {
-        this.setState({
-            username: '',
-            tcno: '',
-            firstPass: '',
-            secondPass: ''
-        });
     }
 
     handleClick() {
@@ -96,7 +86,6 @@ class RegisterPage extends React.Component {
                 }
                 this.props.showPopup(0, errorMessage);
             }).finally(() => {
-                this.resetFields();
                 this.setState({
                     isProcessingRegister: false
                 });

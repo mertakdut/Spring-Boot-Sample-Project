@@ -2,8 +2,8 @@ import React from 'react';
 import { Alert } from 'react-bootstrap'
 import { connect } from 'react-redux'
 
-import Request from '../services/Request'
-import { showDialog, currenciesUptodate } from '../actions';
+import Request from '../../services/Request'
+import { showDialog, currenciesUptodate } from '../../actions';
 
 const mapStateToProps = state => ({
     loggedInUsername: state.login,

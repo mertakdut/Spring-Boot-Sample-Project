@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { closeDialog } from '../actions';
+import { closeDialog } from '../../actions';
 
 const mapStateToProps = state => ({
     show: state.dialog.isOpen,

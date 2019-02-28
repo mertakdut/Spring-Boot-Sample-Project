@@ -3,21 +3,21 @@ import { Container } from 'react-bootstrap'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import NavBarTop from '../components/NavigationBar/NavigationBar';
-import PopupDialog from '../components/PopupDialog';
+import NavBarTop from '../../components/NavigationBar/NavigationBar';
+import PopupDialog from '../../components/PopupDialog/PopupDialog';
 
-import HomePage from './inner/HomePage';
-import UsersPage from './inner/UsersPage';
-import CurrencyPage from './CurrencyPage/CurrencyPage';
-import TransferPage from './inner/TransferPage';
-import HistoryPage from './inner/HistoryPage';
+import HomePage from '../HomePage/HomePage';
+import UsersPage from '../UsersPage/UsersPage';
+import CurrencyPage from '../CurrencyPage/CurrencyPage';
+import TransferPage from '../TransferPage/TransferPage';
+import HistoryPage from '../HistoryPage/HistoryPage';
 
-import RegisterPage from './inner/RegisterPage';
-import LoginPage from './inner/LoginPage';
+import RegisterPage from '../RegisterPage/RegisterPage';
+import LoginPage from '../LoginPage/LoginPage';
 
-import MoneyBar from '../components/MoneyBar';
+import MoneyBar from '../../components/MoneyBar/MoneyBar';
 
-import { login } from '../actions';
+import { login } from '../../actions';
 
 const mapDispatchToProps = dispatch => ({
     login: (username) => dispatch(login(username))
@@ -45,8 +45,8 @@ class MainPage extends React.Component {
                         <MoneyBar />
                         <Route exact path="/" component={HomePage} />
                         <Route exact path="/users" component={UsersPage} />
-                        <Route exact path="/currency" render={() => <CurrencyPage onOwnedCurrenciesUpdated={this.retrieveWealthAndUpdateState} />} />
-                        <Route exact path="/transfer" render={() => <TransferPage onOwnedCurrenciesUpdated={this.retrieveWealthAndUpdateState} />} />
+                        <Route exact path="/currency" component={CurrencyPage} />
+                        <Route exact path="/transfer" component={TransferPage} />
                         <Route exact path="/history" component={HistoryPage} />
                         <Route exact path="/login" component={LoginPage} />
                         <Route exact path="/register" component={RegisterPage} />
