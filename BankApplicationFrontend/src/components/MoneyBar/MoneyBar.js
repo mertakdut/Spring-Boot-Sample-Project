@@ -21,10 +21,12 @@ class MoneyBar extends React.Component {
         super(props);
 
         this.state = {
-            ownedCurrencies: null
-        };
+            isProcessing: false,
+            barMessage: ''
+        }
 
         this.retrieveWealthAndUpdateState = this.retrieveWealthAndUpdateState.bind(this);
+        this.setBarMessage = this.setBarMessage.bind(this);
     }
 
     componentDidMount() {
@@ -46,12 +48,11 @@ class MoneyBar extends React.Component {
             const request = new Request().getRequestInstance();
             request.post('wealth/retrieve', { username: this.props.loggedInUsername })
                 .then((response) => {
-                    this.setState({ ownedCurrencies: [] });
                     Object.keys(response.data.wealthMap).map((key) => {
                         if (response.data.wealthMap[key] == 0) delete response.data.wealthMap[key];
                     });
-                    this.setState({ ownedCurrencies: response.data.wealthMap });
                     this.props.currenciesUptodate();
+                    this.setBarMessage(response.data.wealthMap);
                 }).catch((error) => {
                     console.log(error);
                     var errorMessage = 'Network error.';
@@ -65,30 +66,27 @@ class MoneyBar extends React.Component {
         }
     }
 
-    render() {
-
-        var barMessage = "";
-        if (this.state.ownedCurrencies != null) {
-            if (Object.keys(this.state.ownedCurrencies).length === 0) {
+    setBarMessage(ownedCurrencies) {
+        let barMessage = "";
+        if (ownedCurrencies != null) {
+            if (Object.keys(ownedCurrencies).length === 0) {
                 barMessage = "Possessions make you rich? Your richness is life, forever."
             } else {
                 barMessage += "You have ";
-                Object.keys(this.state.ownedCurrencies).forEach((key, index, array) => {
-                    barMessage += this.state.ownedCurrencies[key] + " " + key + ((array.length - 1) != index ? ", " : ".");
+                Object.keys(ownedCurrencies).forEach((key, index, array) => {
+                    barMessage += ownedCurrencies[key] + " " + key + ((array.length - 1) != index ? ", " : ".");
                 });
             }
         }
+        this.setState({ barMessage: barMessage });
+    }
 
-        const popupDialog = barMessage !== "" ?
-            <Alert className="text-center" variant="primary">
-                {barMessage}
-            </Alert> : null;
+    render() {
+        if (this.state.barMessage != "") {
+            return <Alert className="text-center" variant="primary">{this.state.barMessage}</Alert>
+        }
 
-        return (
-            <div>
-                {popupDialog}
-            </div>
-        );
+        return null;
     }
 }
 

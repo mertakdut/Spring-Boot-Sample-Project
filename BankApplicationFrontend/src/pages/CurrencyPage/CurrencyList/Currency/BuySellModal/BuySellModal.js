@@ -41,7 +41,7 @@ class BuySellModal extends React.Component {
             }).then((response) => {
                 this.props.callback(true, (this.props.isBuying ? "Bought " : "Sold ") + response.data.amount + " " + response.data.currency + ".", 2);
             }).catch((error) => {
-                console.log(error);
+                console.log(error.response != null ? error.response : error);
                 var errorMessage = 'Network Error';
                 if (error != null && error.response != null) {
                     console.log(error.response);

@@ -50,7 +50,7 @@ class NavBarTop extends React.Component {
         const loginLogout = this.props.loggedInUsername == null ?
             <NavItem style={navbarStyling} componentclass="span"><Link to="/login">Login</Link></NavItem> :
             <NavItem style={navbarStyling} onClick={() =>
-                this.props.showPopup(1, 'Are sure you want to logout ' + this.props.loggedInUsername + '?', this.onLoggedOut)}>Logout</NavItem>
+                this.props.showPopup(1, 'Are sure you want to logout ' + this.props.loggedInUsername + '?', this.onLoggedOut())}>Logout</NavItem>
 
         return (
             <Navbar bg="light" expand="lg" >

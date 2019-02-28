@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { Form, Col, Button } from 'react-bootstrap';
-import Request from '../../services/Request';
 import { showDialog, currenciesObsolete } from '../../actions';
+import CurrencyDropdown from './CurrencyDropdown/CurrencyDropdown'
+import Request from '../../services/Request';
 
 const mapStateToProps = state => ({
     loggedInUsername: state.login
@@ -54,7 +55,7 @@ class TransferPage extends React.Component {
                 this.props.showPopup(2, 'Successfully transfered ' + response.data.amount + " " + response.data.currency + " to " + this.state.tcno + ".");
                 this.props.currenciesNeedUpdate();
             }).catch((error) => {
-                console.log(error);
+                console.log(error.response != null ? error.response : error);
                 var errorMessage = 'Network error';
                 if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
                     errorMessage = error.response.data.message;
@@ -88,56 +89,13 @@ class TransferPage extends React.Component {
                     </Form.Group>
                     <Form.Group as={Col} md="10">
                         <Form.Label>Amount</Form.Label>
-                        <Form.Control type="text" placeholder="Amount" onChange={this.handleAmountChange} value={this.state.amount} maxLength="6" />
+                        <Form.Control type="text" placeholder="Amount" onChange={this.handleAmountChange} value={this.state.amount} maxLength="8" />
                     </Form.Group>
                 </Form.Row>
                 <Form.Row className="justify-content-end">
                     <Button variant="primary" size="lg" onClick={this.handleClick} disabled={this.state.isProcessingTransfer}>Transfer</Button>
                 </Form.Row>
             </Form>
-        )
-    }
-}
-
-class CurrencyDropdown extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            currencies: []
-        }
-    }
-
-    componentDidMount() {
-        const request = new Request().getRequestInstance('https://api.exchangeratesapi.io');
-        request.get('/latest?base=TRY')
-            .then((response) => {
-                this.setState({ currencies: response.data.rates });
-                console.log(this.state.currencies);
-            }).catch((error) => {
-                console.log(error);
-            });
-    }
-
-    render() {
-        const currencies = Object.keys(this.state.currencies).map((keyName, index) =>
-            <CurrencyDropdownItem key={index} currency={keyName} />
-        );
-
-        return (
-            <Form.Control as="select">
-                {currencies}
-            </Form.Control>
-        )
-    }
-
-}
-
-class CurrencyDropdownItem extends React.Component {
-    render() {
-        return (
-            <option>{this.props.currency}</option>
         )
     }
 }

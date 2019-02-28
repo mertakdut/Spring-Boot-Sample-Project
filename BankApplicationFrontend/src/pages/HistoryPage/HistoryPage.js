@@ -1,10 +1,9 @@
 import React from 'react';
-import { Table, Jumbotron } from 'react-bootstrap';
 import { connect } from 'react-redux'
-import Moment from 'react-moment';
-
 import Request from '../../services/Request'
 import { showDialog } from '../../actions';
+import EmptyListWrapper from './EmptyListWrapper/EmptyListWrapper'
+import HistoryList from './HistoryList/HistoryList'
 
 const mapStateToProps = state => ({
     loggedInUsername: state.login
@@ -62,7 +61,6 @@ class HistoryPage extends React.Component {
     }
 
     render() {
-
         if (!this.state.isRetrievingRecords) {
             if (this.state.histories != null && Object.keys(this.state.histories).length !== 0) {
                 return <HistoryList histories={this.state.histories} />
@@ -70,65 +68,7 @@ class HistoryPage extends React.Component {
                 return <EmptyListWrapper />
             }
         }
-
         return null;
-    }
-}
-
-class EmptyListWrapper extends React.Component {
-
-    render() {
-        return (
-            <Jumbotron>
-                <h1 className="text-center">No Transaction Records Found!</h1>
-                <p>
-                    I wish I could show you some data over here... But apparently none found either in database
-                    (*cough*mocked*cough*) -please excuse my 'phlegm'-
-                    a there's a real problem about the connection.
-                </p>
-            </Jumbotron>
-        )
-    }
-
-}
-
-class HistoryList extends React.Component {
-    render() {
-        const histories = this.props.histories.map((history, index) =>
-            <History key={history.id} history={history} index={index} />
-        );
-        return (
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>Bought/Sold</th>
-                        <th>Amount</th>
-                        <th>Currency</th>
-                        <th>Transaction Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {histories}
-                </tbody>
-            </Table>
-        )
-    }
-}
-
-class History extends React.Component {
-    render() {
-        return (
-            <tr>
-                <td>{this.props.history.bought ? "Bought" : "Sold"}</td>
-                <td>{this.props.history.amount}</td>
-                <td>{this.props.history.currency}</td>
-                <td>
-                    <Moment format="hh:mm:ss DD/MM/YYYY">
-                        {this.props.history.transactionTime}
-                    </Moment>
-                </td>
-            </tr>
-        )
     }
 }
 
