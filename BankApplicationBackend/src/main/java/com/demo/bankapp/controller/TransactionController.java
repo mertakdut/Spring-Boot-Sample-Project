@@ -25,7 +25,7 @@ import com.demo.bankapp.service.concretions.WealthService;
 
 @RestController
 @RequestMapping(value = "/transaction", produces = { MediaType.APPLICATION_JSON_VALUE })
-@CrossOrigin(origins = "*") // TODO: Replace with FE domain.
+@CrossOrigin(origins = "*")
 public class TransactionController {
 
 	@Autowired
@@ -40,8 +40,8 @@ public class TransactionController {
 	@Autowired
 	WealthService userWealthService;
 
-	@PostMapping("/make")
-	public Resource<Transaction> makeTransaction(@RequestBody MakeTransactionRequest request) {
+	@PostMapping("/create")
+	public Resource<Transaction> createTransaction(@RequestBody MakeTransactionRequest request) {
 
 		if (request == null) {
 			throw new BadRequestException();
@@ -76,8 +76,8 @@ public class TransactionController {
 		return assembler.toResource(transaction);
 	}
 
-	@PostMapping("/findAllByUsername")
-	public List<Resource<Transaction>> findAllByUsername(@RequestBody FindAllByUserRequest request) {
+	@PostMapping("/find/all")
+	public List<Resource<Transaction>> findAll(@RequestBody FindAllByUserRequest request) {
 
 		if (request == null) {
 			throw new BadRequestException();

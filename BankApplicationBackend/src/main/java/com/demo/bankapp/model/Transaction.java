@@ -21,7 +21,6 @@ public class Transaction {
 	private Date transactionTime;
 
 	private Transaction() {
-
 	}
 
 	public Transaction(Long userId, boolean isBought, String currency, BigDecimal amount) {

@@ -20,7 +20,7 @@ public class TransactionResourceAssembler implements ResourceAssembler<Transacti
 		MakeTransactionRequest mtRequest = new MakeTransactionRequest();
 		
 		return new Resource<>(transaction,
-			linkTo(methodOn(TransactionController.class).makeTransaction(mtRequest)).withSelfRel()
+			linkTo(methodOn(TransactionController.class).createTransaction(mtRequest)).withSelfRel()
 //			linkTo(methodOn(TransactionController.class).findAll()).withRel("transactions")
 		);
 	}

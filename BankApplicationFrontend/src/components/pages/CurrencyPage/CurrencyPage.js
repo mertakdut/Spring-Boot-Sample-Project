@@ -28,9 +28,7 @@ class CurrencyPage extends React.Component {
 
     render() {
         return (
-            <div>
-                <CurrencyList currencies={this.state.currencies} />
-            </div>
+            <CurrencyList currencies={this.state.currencies} />
         )
     }
 }

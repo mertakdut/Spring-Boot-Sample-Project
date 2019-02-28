@@ -16,7 +16,6 @@ public class User {
 	private String tcno;
 
 	private User() {
-
 	}
 
 	public User(String username, String password, String tcno) {

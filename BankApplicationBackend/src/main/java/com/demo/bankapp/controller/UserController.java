@@ -24,7 +24,7 @@ import com.demo.bankapp.service.abstractions.IWealthService;
 
 @RestController
 @RequestMapping(value = "/user", produces = { MediaType.APPLICATION_JSON_VALUE })
-@CrossOrigin(origins = "*") // TODO: Replace with FE domain.
+@CrossOrigin(origins = "*")
 public class UserController {
 
 	@Autowired
@@ -36,12 +36,12 @@ public class UserController {
 	@Autowired
 	private UserResourceAssembler assembler;
 
-	@GetMapping("/findAll")
+	@GetMapping("/find/all")
 	public List<Resource<User>> findAll() {
 		return userService.findAll().stream().map(assembler::toResource).collect(Collectors.toList());
 	}
 
-	@PostMapping("/new")
+	@PostMapping("/create")
 	public Resource<User> createNewUser(@RequestBody CreateNewUserRequest request) {
 
 		if (request == null) {

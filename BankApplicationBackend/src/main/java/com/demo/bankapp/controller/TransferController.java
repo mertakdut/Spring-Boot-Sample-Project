@@ -26,7 +26,7 @@ import com.demo.bankapp.service.concretions.TransferService;
 
 @RestController
 @RequestMapping(value = "/transfer", produces = { MediaType.APPLICATION_JSON_VALUE })
-@CrossOrigin(origins = "*") // TODO: Replace with FE domain.
+@CrossOrigin(origins = "*")
 public class TransferController {
 
 	@Autowired
@@ -41,7 +41,7 @@ public class TransferController {
 	@Autowired
 	TransferResourceAssembler assembler;
 
-	@PostMapping("/make")
+	@PostMapping("/create")
 	public Resource<Transfer> makeTransfer(@RequestBody MakeTransferRequest request) {
 
 		if (request == null || request.getCurrency() == null || request.getCurrency().equals("")) {

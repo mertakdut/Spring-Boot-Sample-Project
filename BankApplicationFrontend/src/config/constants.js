@@ -14,13 +14,17 @@ export const ERROR_TCNOLENGTH = 'Length of TC No must be 11. Currently it is: ';
 // URLs
 export const BASEURL_EXCHANGERATES = 'https://api.exchangeratesapi.io';
 export const URL_EXCHANGERATES = '/latest?base=TRY';
-export const URL_RETRIEVEHISTORY = 'transaction/findAllByUsername';
+    // User
 export const URL_LOGIN = 'user/login';
-export const URL_REGISTER = 'user/new';
-export const URL_MAKETRANSFER = 'transfer/make';
-export const URL_RETRIEVEALLUSERS =  'user/findAll';
+export const URL_REGISTER = 'user/create';
+export const URL_RETRIEVEALLUSERS =  'user/find/all';
+    // Transaction
+export const URL_MAKETRANSACTION = 'transaction/create';
+export const URL_RETRIEVEHISTORY = 'transaction/find/all';
+    // Transfer
+export const URL_MAKETRANSFER = 'transfer/create';
+    // Wealth
 export const URL_RETRIEVEWEALTH = 'wealth/retrieve';
-export const URL_MAKETRANSACTION = 'transaction/make';
 
 // Local storage keys
 export const LSKEY_USERNAME = 'username';
