@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Request from '../../services/Request'
 import { showDialog, currenciesUptodate } from '../../actions';
 import { URL_RETRIEVEWEALTH } from '../../config/constants'
+import NumberFormat from 'react-number-format'
 
 const mapStateToProps = state => ({
     loggedInUsername: state.login,
@@ -22,11 +23,10 @@ class MoneyBar extends React.Component {
 
         this.state = {
             isProcessing: false,
-            barMessage: ''
+            ownedCurrencies: null
         }
 
         this.retrieveWealthAndUpdateState = this.retrieveWealthAndUpdateState.bind(this);
-        this.setBarMessage = this.setBarMessage.bind(this);
     }
 
     componentDidMount() {
@@ -36,8 +36,12 @@ class MoneyBar extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.loggedInUsername != null && (this.props.loggedInUsername != prevProps.loggedInUsername || this.props.isCurrenciesObsolete)) {
-            this.retrieveWealthAndUpdateState();
+        if (this.props.loggedInUsername != prevProps.loggedInUsername || this.props.isCurrenciesObsolete) {
+            if (this.props.loggedInUsername != null) {
+                this.retrieveWealthAndUpdateState();
+            } else {
+                this.setState({ ownedCurrencies: null });
+            }
         }
     }
 
@@ -52,7 +56,7 @@ class MoneyBar extends React.Component {
                         if (response.data.wealthMap[key] == 0) delete response.data.wealthMap[key];
                     });
                     this.props.currenciesUptodate();
-                    this.setBarMessage(response.data.wealthMap);
+                    this.setState({ ownedCurrencies: response.data.wealthMap });
                 }).catch((error) => {
                     console.log(error);
                     var errorMessage = 'Network error.';
@@ -66,27 +70,20 @@ class MoneyBar extends React.Component {
         }
     }
 
-    setBarMessage(ownedCurrencies) {
-        let barMessage = "";
-        if (ownedCurrencies != null) {
-            if (Object.keys(ownedCurrencies).length === 0) {
-                barMessage = "Possessions make you rich? Your richness is life, forever."
-            } else {
-                barMessage += "You have ";
-                Object.keys(ownedCurrencies).forEach((key, index, array) => {
-                    barMessage += ownedCurrencies[key] + " " + key + ((array.length - 1) != index ? ", " : ".");
-                });
-            }
-        }
-        this.setState({ barMessage: barMessage });
-    }
-
     render() {
-        if (this.state.barMessage != "") {
-            return <Alert className="text-center" variant="primary">{this.state.barMessage}</Alert>
-        }
+        if (this.state.ownedCurrencies == null) {
+            return null;
+        } else if (Object.keys(this.state.ownedCurrencies).length === 0) {
+            return <Alert className="text-center" variant="primary">Possessions make you rich? Your richness is life, forever.</Alert>
+        } else {
+            const barMessage = Object.keys(this.state.ownedCurrencies).map((keyName, index, array) => (
+                <NumberFormat key={keyName} value={this.state.ownedCurrencies[keyName]} displayType={'text'} thousandSeparator={true}
+                    suffix={" " + keyName + ((array.length - 1) != index ? ", " : ".")} />))
 
-        return null;
+            return <Alert className="text-center" variant="primary">
+                {barMessage}
+            </Alert>
+        }
     }
 }
 
