@@ -1,8 +1,18 @@
 import React from 'react';
 import { Table, Jumbotron } from 'react-bootstrap';
-import Request from '../../services/Request';
-import PopupDialog from '../../components/PopupDialog';
+import { connect } from 'react-redux'
 import Moment from 'react-moment';
+
+import Request from '../../services/Request'
+import { showDialog } from '../../actions';
+
+const mapStateToProps = state => ({
+    loggedInUsername: state.login
+})
+
+const mapDispatchToProps = dispatch => ({
+    showPopup: (title, message) => dispatch(showDialog(title, message))
+})
 
 class HistoryPage extends React.Component {
 
@@ -10,44 +20,58 @@ class HistoryPage extends React.Component {
         super(props);
         this.state = {
             histories: [],
-            isDoneLoadingHistories: false,
-            isShowingPopup: false
+            isRetrievingRecords: false
         };
+
+        this.retrieveHistoryRecords = this.retrieveHistoryRecords.bind(this);
     }
 
-    componentDidMount() {
-        const request = new Request().getRequestInstance();
-        request.get('transaction/findAll')
-            .then((response) => {
+    retrieveHistoryRecords() {
+        if (!this.state.isRetrievingRecords) {
+            this.setState({ isRetrievingRecords: true });
+
+            const request = new Request().getRequestInstance();
+            request.post('transaction/findAllByUsername', {
+                username: this.props.loggedInUsername
+            }).then((response) => {
                 console.log(response);
                 this.setState({ histories: response.data });
             }).catch((error) => {
-                console.log(error);
+                console.log(error.response);
                 var errorMessage = 'Network error';
                 if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
                     errorMessage = error.response.data.message;
                 }
-                this.setState({ isShowingPopup: true, popupTitle: 0, popupMessage: errorMessage });
+                this.props.showPopup(0, errorMessage);
             }).finally(() => {
-                this.setState({ isDoneLoadingHistories: true });
+                this.setState({ isRetrievingRecords: false });
             });
+        }
+    }
+
+    componentDidMount() {
+        if (this.props.loggedInUsername != null) {
+            this.retrieveHistoryRecords();
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.loggedInUsername != null && this.props.loggedInUsername != prevProps.loggedInUsername) {
+            this.retrieveHistoryRecords();
+        }
     }
 
     render() {
 
-        const popupDialog = this.state.isShowingPopup ?
-            <PopupDialog callback={() => this.setState({ isShowingPopup: false })} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
-            : null;
+        if (!this.state.isRetrievingRecords) {
+            if (this.state.histories != null && Object.keys(this.state.histories).length !== 0) {
+                return <HistoryList histories={this.state.histories} />
+            } else {
+                return <EmptyListWrapper />
+            }
+        }
 
-        const bestory = this.state.isDoneLoadingHistories ? this.state.histories != null && Object.keys(this.state.histories).length !== 0 ?
-            <HistoryList histories={this.state.histories} /> : <EmptyListWrapper /> : null;
-
-        return (
-            <div>
-                {popupDialog}
-                {bestory}
-            </div>
-        )
+        return null;
     }
 }
 
@@ -56,7 +80,7 @@ class EmptyListWrapper extends React.Component {
     render() {
         return (
             <Jumbotron>
-                <h1>No Transaction Records Found!</h1>
+                <h1 className="text-center">No Transaction Records Found!</h1>
                 <p>
                     I wish I could show you some data over here... But apparently none found either in database
                     (*cough*mocked*cough*) -please excuse my 'phlegm'-
@@ -108,4 +132,4 @@ class History extends React.Component {
     }
 }
 
-export default HistoryPage;
+export default connect(mapStateToProps, mapDispatchToProps)(HistoryPage);

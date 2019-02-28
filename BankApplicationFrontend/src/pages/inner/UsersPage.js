@@ -1,15 +1,19 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import Request from '../../services/Request';
-import PopupDialog from '../../components/PopupDialog';
+import { connect } from 'react-redux'
+import { showDialog } from '../../actions';
+
+const mapDispatchToProps = dispatch => ({
+    showPopup: (title, message) => dispatch(showDialog(title, message))
+})
 
 class UsersPage extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            users: [],
-            isShowingPopup: false
+            users: []
         };
     }
 
@@ -21,11 +25,11 @@ class UsersPage extends React.Component {
                 this.setState({ users: response.data });
             }).catch((error) => {
                 console.log(error);
-                var errorMessage = 'Network error';
+                var errorMessage = 'Network error.';
                 if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
                     errorMessage = error.response.data.message;
                 }
-                this.setState({ isShowingPopup: true, popupTitle: 0, popupMessage: errorMessage });
+                this.props.showPopup(0, errorMessage);
             });
     }
 
@@ -41,15 +45,8 @@ class UsersPage extends React.Component {
 
     render() {
 
-        const popupDialog = this.state.isShowingPopup ?
-            <PopupDialog callback={() => this.setState({ isShowingPopup: false })} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
-            : null;
-
         return (
-            <div>
-                {popupDialog}
-                <UserList users={this.state.users} />
-            </div>
+            <UserList users={this.state.users} />
         )
     }
 }
@@ -57,7 +54,7 @@ class UsersPage extends React.Component {
 class UserList extends React.Component {
     render() {
         const users = this.props.users.map((user, index) =>
-            <User key={user.id} user={user} index={index} /> // key={user.links.self.href}
+            <User key={user.id} user={user} index={index} />
         );
         return (
             <Table striped bordered hover>
@@ -88,4 +85,4 @@ class User extends React.Component {
     }
 }
 
-export default UsersPage;
+export default connect(null, mapDispatchToProps)(UsersPage)

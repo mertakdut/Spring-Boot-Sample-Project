@@ -1,7 +1,18 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { Navbar, Nav, NavItem } from 'react-bootstrap'
-import PopupDialog from './PopupDialog';
+import { connect } from 'react-redux'
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
+
+import { showDialog, logout } from '../../actions';
+
+const mapStateToProps = state => ({
+    loggedInUsername: state.login
+})
+
+const mapDispatchToProps = dispatch => ({
+    showPopup: (title, message, callback) => dispatch(showDialog(title, message, callback)),
+    logout: () => dispatch(logout)
+})
 
 const navbarStyling = {
     padding: '15px',
@@ -16,23 +27,30 @@ class NavBarTop extends React.Component {
         super(props);
 
         this.state = {
-            username: localStorage.getItem('username')
-        };
-        console.log(this.state.username);
+            hasJustLoggedOut: false
+        }
 
         this.onLoggedOut = this.onLoggedOut.bind(this);
     }
 
     onLoggedOut() {
         localStorage.removeItem('username');
-        this.setState({ username: localStorage.getItem('username') });
+        this.props.logout();
+        this.setState({ hasJustLoggedOut: true });
     }
 
     render() {
 
-        const loginLogout = this.state.username == null ?
+        if (this.state.hasJustLoggedOut) {
+            this.setState({ hasJustLoggedOut: false })
+            return <Redirect to="/" />
+        }
+
+
+        const loginLogout = this.props.loggedInUsername == null ?
             <NavItem style={navbarStyling} componentclass="span"><Link to="/login">Login</Link></NavItem> :
-            <LogoutDialog username={this.state.username} callback={this.onLoggedOut} />
+            <NavItem style={navbarStyling} onClick={() =>
+                this.props.showPopup(1, 'Are sure you want to logout ' + this.props.loggedInUsername + '?', this.onLoggedOut)}>Logout</NavItem>
 
         return (
             <Navbar bg="light" expand="lg" >
@@ -46,7 +64,7 @@ class NavBarTop extends React.Component {
                         <NavItem style={navbarStyling} componentclass="span"><Link to="/history">Transaction History</Link></NavItem>
                     </Nav>
                     <Nav className="ml-auto">
-                        <NavItem style={navbarStyling} componentclass="span"><Link to="/register">Register</Link></NavItem>
+                        {this.props.loggedInUsername == null ? <NavItem style={navbarStyling} componentclass="span"><Link to="/register">Register</Link></NavItem> : null}
                         {loginLogout}
                     </Nav>
                 </Navbar.Collapse>
@@ -55,37 +73,4 @@ class NavBarTop extends React.Component {
     }
 }
 
-class LogoutDialog extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            isShowingPopup: false
-        }
-
-        this.onPopupClosed = this.onPopupClosed.bind(this);
-    }
-
-    onPopupClosed(result) {
-        if (result) {
-            this.props.callback();
-        }
-    }
-
-    render() {
-
-        const popupDialog = this.state.isShowingPopup ?
-            <PopupDialog callback={this.onPopupClosed} title='Logout' message={'Are you sure you want to logout ' + this.props.username + '?'} isAnswerable={true} /> : null;
-
-        return (
-            <div>
-                {popupDialog}
-                <NavItem style={navbarStyling} onClick={() => this.setState({ isShowingPopup: true })}>Logout</NavItem>
-            </div >
-        )
-    }
-
-}
-
-export default NavBarTop;
+export default connect(mapStateToProps, mapDispatchToProps)(NavBarTop);

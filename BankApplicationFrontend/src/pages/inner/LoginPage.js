@@ -1,11 +1,22 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
-import FormElement from '../../components/FormElement';
-import PopupDialog from '../../components/PopupDialog';
-import Request from '../../services/Request';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux'
+
+import FormElement from '../../components/FormElement';
+import Request from '../../services/Request';
+import { login, showDialog } from '../../actions';
 
 const ERROR_ALLFIELDSMANDATORY = 'All fields are mandatory.';
+
+const mapStateToProps = state => ({
+    isLoggedIn: state.login != null
+})
+
+const mapDispatchToProps = dispatch => ({
+    login: (username) => dispatch(login(username)),
+    showPopup: (title, message) => dispatch(showDialog(title, message))
+})
 
 class LoginPage extends React.Component {
 
@@ -15,18 +26,12 @@ class LoginPage extends React.Component {
         this.state = {
             username: '',
             password: '',
-            isShowingPopup: false,
-            popupMessage: '',
-            popupTitle: '',
-            isProcessingLogin: false,
-            isLoggedIn: false
+            isProcessingLogin: false
         }
 
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleClick = this.handleClick.bind(this);
-        this.onPopupClosed = this.onPopupClosed.bind(this);
-        this.resetFields = this.resetFields.bind(this);
     }
 
     handleUsernameChange(e) {
@@ -37,25 +42,14 @@ class LoginPage extends React.Component {
         this.setState({ password: e.target.value });
     }
 
-    resetFields() {
-        this.setState({
-            username: '',
-            tcno: '',
-            firstPass: '',
-            secondPass: ''
-        });
-    }
-
     handleClick() {
-
-        this.setState({
-            isProcessingLogin: true
-        });
-
-        // TODO: Same logic exists in RegisterPage.
         if (this.state.username == "" || this.state.password == "") {
-            this.setState({ isShowingPopup: true, popupTitle: 1, popupMessage: ERROR_ALLFIELDSMANDATORY });
+            this.props.showPopup(1, ERROR_ALLFIELDSMANDATORY);
         } else {
+            this.setState({
+                isProcessingLogin: true
+            });
+
             const request = new Request().getRequestInstance();
             request.post('user/login', {
                 username: this.state.username,
@@ -70,9 +64,8 @@ class LoginPage extends React.Component {
                 if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
                     errorMessage = error.response.data.message;
                 }
-                this.setState({ isShowingPopup: true, popupTitle: 0, popupMessage: errorMessage });
+                this.props.showPopup(0, errorMessage);
             }).finally(() => {
-                this.resetFields();
                 this.setState({
                     isProcessingLogin: false
                 });
@@ -80,20 +73,9 @@ class LoginPage extends React.Component {
         }
     }
 
-    onPopupClosed(result) {
-        console.log(result);
-        this.setState({
-            isShowingPopup: false
-        });
-    }
-
     render() {
 
-        if (this.state.isShowingPopup) {
-            return <PopupDialog callback={this.onPopupClosed} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
-        }
-
-        if (!this.state.isProcessingLogin && this.state.isLoggedIn) {
+        if (!this.state.isProcessingLogin && this.props.isLoggedIn) {
             return <Redirect to='/' />;
         }
 
@@ -111,4 +93,4 @@ class LoginPage extends React.Component {
     }
 }
 
-export default LoginPage;
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage)

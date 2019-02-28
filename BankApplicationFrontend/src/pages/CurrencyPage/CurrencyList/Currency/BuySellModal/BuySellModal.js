@@ -1,6 +1,7 @@
 import React from 'react';
 import NumberFormat from 'react-number-format';
 import { Modal, InputGroup, FormControl, Button } from 'react-bootstrap';
+import Request from '../../../../../services/Request';
 
 class BuySellModal extends React.Component {
 
@@ -8,7 +9,6 @@ class BuySellModal extends React.Component {
         super(props);
 
         this.state = {
-            show: true,
             inputAmount: '',
             convertedAmount: '0.00',
             isProcessingTransaction: false
@@ -34,14 +34,14 @@ class BuySellModal extends React.Component {
         const request = new Request().getRequestInstance();
         request.post('transaction/make',
             {
-                username: "Mert",
+                username: this.props.username,
                 buying: this.props.isBuying,
                 currency: this.props.currency,
                 amount: this.state.inputAmount
             }).then((response) => {
-                console.log(response);
                 this.props.callback(true, (this.props.isBuying ? "Bought " : "Sold ") + response.data.amount + " " + response.data.currency + ".", 2);
             }).catch((error) => {
+                console.log(error);
                 var errorMessage = 'Network Error';
                 if (error != null && error.response != null) {
                     console.log(error.response);
@@ -50,16 +50,12 @@ class BuySellModal extends React.Component {
                     }
                 }
                 this.props.callback(true, errorMessage, 0);
-            }).finally(() => {
-                this.setState({
-                    show: false
-                });
             });
     }
 
     render() {
         return (
-            <Modal show={this.state.show} onHide={() => { this.props.callback(false); }}>
+            <Modal show={true} onHide={() => { this.props.callback(false); }}>
                 <Modal.Header closeButton>
                     <Modal.Title>{this.props.isBuying ? 'Buying' : 'Selling'} {this.props.currency}</Modal.Title>
                 </Modal.Header>

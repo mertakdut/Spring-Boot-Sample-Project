@@ -1,14 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Row, Button, ButtonToolbar, Jumbotron } from 'react-bootstrap';
+import { connect } from 'react-redux'
+
+const mapStateToProps = state => ({
+    loggedInUsername: state.login
+})
 
 class HomePage extends React.Component {
 
     render() {
-
-        const username = localStorage.getItem('username');
-        if (username != null) {
-            return <WelcomeText username={username} />
+        if (this.props.loggedInUsername != null) {
+            return <WelcomeText username={this.props.loggedInUsername} />
         } else {
             return <MainButtonGroup />
         }
@@ -50,4 +53,4 @@ class WelcomeText extends React.Component {
 
 }
 
-export default HomePage;
+export default connect(mapStateToProps, null)(HomePage);

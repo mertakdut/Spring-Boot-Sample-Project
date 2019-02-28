@@ -4,9 +4,8 @@ import { Table } from 'react-bootstrap';
 
 class CurrencyList extends React.Component {
     render() {
-        console.log(this.props.currencies);
         const currencies = Object.keys(this.props.currencies).map((keyName, index) => (
-            <Currency key={keyName} currency={keyName} rate={this.props.currencies[keyName]} index={index} onOwnedCurrenciesUpdated={this.props.onOwnedCurrenciesUpdated} />
+            <Currency key={keyName} currency={keyName} rate={this.props.currencies[keyName]} index={index} />
         ))
 
         return (

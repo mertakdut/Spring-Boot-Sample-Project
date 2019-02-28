@@ -1,7 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import { Form, Col, Button } from 'react-bootstrap';
 import Request from '../../services/Request';
-import PopupDialog from '../../components/PopupDialog';
+import { showDialog, currenciesObsolete } from '../../actions';
+
+const mapStateToProps = state => ({
+    loggedInUsername: state.login
+})
+
+const mapDispatchToProps = dispatch => ({
+    currenciesNeedUpdate: () => dispatch(currenciesObsolete),
+    showPopup: (title, message) => dispatch(showDialog(title, message))
+})
 
 class TransferPage extends React.Component {
 
@@ -11,10 +21,7 @@ class TransferPage extends React.Component {
         this.state = {
             tcno: '',
             amount: '',
-            isProcessingTransfer: false,
-            isShowingPopup: false,
-            popupTitle: 0,
-            popupMessage: ''
+            isProcessingTransfer: false
         };
 
         this.handleTcNoChange = this.handleTcNoChange.bind(this);
@@ -38,24 +45,21 @@ class TransferPage extends React.Component {
         const request = new Request().getRequestInstance();
         request.post('transfer/make',
             {
-                senderUsername: "Mert",
+                senderUsername: this.props.loggedInUsername,
                 receiverTcno: this.state.tcno,
-                currency: 'TRY',
+                currency: 'TRY', // TODO: Change this.
                 amount: this.state.amount
             }).then((response) => {
                 console.log(response);
-                this.setState({
-                    isShowingPopup: true, popupTitle: 2, popupMessage:
-                        'Successfully transfered ' + response.data.amount + " " + response.data.currency + " to " + this.state.tcno + "."
-                });
-                this.props.onOwnedCurrenciesUpdated();
+                this.props.showPopup(2, 'Successfully transfered ' + response.data.amount + " " + response.data.currency + " to " + this.state.tcno + ".");
+                this.props.currenciesNeedUpdate();
             }).catch((error) => {
                 console.log(error);
                 var errorMessage = 'Network error';
                 if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
                     errorMessage = error.response.data.message;
                 }
-                this.setState({ isShowingPopup: true, popupTitle: 0, popupMessage: errorMessage });
+                this.props.showPopup(0, errorMessage);
             }).finally(() => {
                 this.setState({
                     isProcessingTransfer: false
@@ -69,35 +73,28 @@ class TransferPage extends React.Component {
             marginTop: '5%'
         };
 
-        const popupDialog = this.state.isShowingPopup ?
-            <PopupDialog callback={() => this.setState({ isShowingPopup: false })} title={this.state.popupTitle} message={this.state.popupMessage} isAnswerable={false} />
-            : null;
-
         return (
-            <div>
-                {popupDialog}
-                <Form style={formStyle}>
-                    <Form.Row>
-                        <Form.Group as={Col} md="12">
-                            <Form.Label>Receiver TC</Form.Label>
-                            <Form.Control type="text" placeholder="Receiver TC" onChange={this.handleTcNoChange} value={this.state.tcno} maxLength="11" />
-                        </Form.Group>
-                    </Form.Row>
-                    <Form.Row>
-                        <Form.Group as={Col} md="2">
-                            <Form.Label>Currency</Form.Label>
-                            <CurrencyDropdown />
-                        </Form.Group>
-                        <Form.Group as={Col} md="10">
-                            <Form.Label>Amount</Form.Label>
-                            <Form.Control type="text" placeholder="Amount" onChange={this.handleAmountChange} value={this.state.amount} maxLength="6" />
-                        </Form.Group>
-                    </Form.Row>
-                    <Form.Row className="justify-content-end">
-                        <Button variant="primary" size="lg" onClick={this.handleClick} disabled={this.state.isProcessingTransfer}>Transfer</Button>
-                    </Form.Row>
-                </Form>
-            </div >
+            <Form style={formStyle}>
+                <Form.Row>
+                    <Form.Group as={Col} md="12">
+                        <Form.Label>Receiver TC</Form.Label>
+                        <Form.Control type="text" placeholder="Receiver TC" onChange={this.handleTcNoChange} value={this.state.tcno} maxLength="11" />
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                    <Form.Group as={Col} md="2">
+                        <Form.Label>Currency</Form.Label>
+                        <CurrencyDropdown />
+                    </Form.Group>
+                    <Form.Group as={Col} md="10">
+                        <Form.Label>Amount</Form.Label>
+                        <Form.Control type="text" placeholder="Amount" onChange={this.handleAmountChange} value={this.state.amount} maxLength="6" />
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row className="justify-content-end">
+                    <Button variant="primary" size="lg" onClick={this.handleClick} disabled={this.state.isProcessingTransfer}>Transfer</Button>
+                </Form.Row>
+            </Form>
         )
     }
 }
@@ -123,9 +120,7 @@ class CurrencyDropdown extends React.Component {
             });
     }
 
-
     render() {
-
         const currencies = Object.keys(this.state.currencies).map((keyName, index) =>
             <CurrencyDropdownItem key={index} currency={keyName} />
         );
@@ -140,13 +135,11 @@ class CurrencyDropdown extends React.Component {
 }
 
 class CurrencyDropdownItem extends React.Component {
-
     render() {
         return (
             <option>{this.props.currency}</option>
         )
     }
-
 }
 
-export default TransferPage;
+export default connect(mapStateToProps, mapDispatchToProps)(TransferPage)

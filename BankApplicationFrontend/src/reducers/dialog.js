@@ -1,6 +1,6 @@
 const initialState = {
     isOpen: false,
-    title: '',
+    titleEnum: '',
     message: ''
 }
 
@@ -9,14 +9,16 @@ const dialog = (state = initialState, action) => {
         case 'SHOW_DIALOG':
             return Object.assign({}, state, {
                 isOpen: true,
-                title: action.title,
-                message: action.message
+                titleEnum: action.titleEnum,
+                message: action.message,
+                callback: action.callback
             })
         case 'HIDE_DIALOG':
             return Object.assign({}, state, {
                 isOpen: false,
-                title: '',
-                message: ''
+                titleEnum: '',
+                message: '',
+                callback: null
             })
         default:
             return state;

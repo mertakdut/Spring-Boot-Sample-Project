@@ -1,7 +1,13 @@
 import React from 'react';
 import CurrencyList from './CurrencyList/CurrencyList'
-
 import Request from '../../services/Request'
+
+import { connect } from 'react-redux'
+import { showDialog } from '../../actions';
+
+const mapDispatchToProps = dispatch => ({
+    showPopup: (title, message) => dispatch(showDialog(title, message))
+})
 
 class CurrencyPage extends React.Component {
 
@@ -16,16 +22,17 @@ class CurrencyPage extends React.Component {
             this.setState({ currencies: response.data.rates });
         }).catch((error) => {
             console.log(error);
+            this.props.showPopup(0, error);
         });
     }
 
     render() {
         return (
             <div>
-                <CurrencyList currencies={this.state.currencies} onOwnedCurrenciesUpdated={this.props.onOwnedCurrenciesUpdated} />
+                <CurrencyList currencies={this.state.currencies} />
             </div>
         )
     }
 }
 
-export default CurrencyPage;
+export default connect(null, mapDispatchToProps)(CurrencyPage)

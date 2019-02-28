@@ -5,8 +5,9 @@ import { closeDialog } from '../actions';
 
 const mapStateToProps = state => ({
     show: state.dialog.isOpen,
-    title: state.dialog.title,
-    message: state.dialog.message
+    titleEnum: state.dialog.titleEnum,
+    message: state.dialog.message,
+    callback: state.dialog.callback
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -14,41 +15,31 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class PopupDialog extends React.Component {
-    constructor(props, context) {
-        super(props, context);
 
-        // this.handlePositive = this.handlePositive.bind(this);
-        // this.handleNegative = this.handleNegative.bind(this);
+    constructor(props) {
+        super(props);
+        this.onCloseDialog = this.onCloseDialog.bind(this);
     }
 
-    componentDidMount() {
-        console.log(this.props.store);
+    onCloseDialog() {
+        if (this.props.callback) {
+            this.props.callback();
+        }
+        this.props.onClose();
     }
-
-    // handlePositive() {
-    //     this.setState({ show: false });
-    //     this.props.callback(true);
-    // }
-
-    // handleNegative() {
-    //     this.setState({ show: false });
-    //     this.props.callback(false);
-    // }
 
     render() {
 
-        console.log(this.props.show);
-
         return (
             <div>
-                <Modal show={this.props.show} onHide={this.props.onClose}>
+                <Modal show={this.props.usingAsWidget ? true : this.props.show} onHide={this.props.onClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>{this.props.title}</Modal.Title>
+                        <Modal.Title>{this.props.titleEnum == 0 ? "Error" : this.props.titleEnum == 1 ? "Warning" : "Success"}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>{this.props.message}</Modal.Body>
                     <Modal.Footer>
-                        {this.props.isAnswerable ? <Button variant="secondary" onClick={this.props.onClose}>No</Button> : null}
-                        <Button variant="primary" onClick={this.props.onClose}>{this.props.isAnswerable ? 'Yes' : 'Okay'}</Button>
+                        {this.props.callback ? <Button variant="secondary" onClick={this.props.onClose}>No</Button> : null}
+                        <Button variant="primary" onClick={this.onCloseDialog}>{this.props.callback ? 'Yes' : 'Okay'}</Button>
                     </Modal.Footer>
                 </Modal>
             </div>
