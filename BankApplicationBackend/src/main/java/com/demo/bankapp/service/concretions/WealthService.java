@@ -32,7 +32,7 @@ public class WealthService implements IWealthService {
 			throw new BadRequestException("Invalid currency.");
 		}
 
-		BigDecimal rate = new BigDecimal(getCurrencyRate(currency));
+		BigDecimal rate = new BigDecimal(getCurrencyRates().get(currency));
 		BigDecimal tryEquivalent = amount.divide(rate, 9, RoundingMode.HALF_UP);
 
 		if (isBuying) {
@@ -86,7 +86,7 @@ public class WealthService implements IWealthService {
 
 		Map<String, BigDecimal> wealthMap = new HashMap<>();
 
-		Map<String, Double> currencyMap = getCurrencyMap();
+		Map<String, Double> currencyMap = getCurrencyRates();
 		for (Map.Entry<String, Double> entry : currencyMap.entrySet()) {
 			wealthMap.put(entry.getKey(), BigDecimal.ZERO);
 		}
@@ -102,6 +102,14 @@ public class WealthService implements IWealthService {
 		return repository.findById(userId).orElseThrow(() -> new UserNotFoundException());
 	}
 
+	@Override
+	public Map<String, Double> getCurrencyRates() {
+		final String uri = "https://api.exchangeratesapi.io/latest?base=TRY";
+
+		RestTemplate restTemplate = new RestTemplate();
+		return ((Map<String, Map<String, Double>>) restTemplate.getForObject(uri, Map.class)).get("rates");
+	}
+
 	private void addInitialBalance(Map<String, BigDecimal> wealthMap) {
 		String currency = "TRY";
 
@@ -110,18 +118,6 @@ public class WealthService implements IWealthService {
 		BigDecimal finalAmount = currentAmount.add(amountToAdd);
 
 		wealthMap.put(currency, finalAmount);
-	}
-
-	private Map<String, Double> getCurrencyMap() {
-		final String uri = "https://api.exchangeratesapi.io/latest?base=TRY";
-
-		RestTemplate restTemplate = new RestTemplate();
-		return ((Map<String, Map<String, Double>>) restTemplate.getForObject(uri, Map.class)).get("rates");
-	}
-
-	private double getCurrencyRate(String currency) {
-		Map<String, Double> currencyMap = getCurrencyMap();
-		return currencyMap.get(currency);
 	}
 
 }
