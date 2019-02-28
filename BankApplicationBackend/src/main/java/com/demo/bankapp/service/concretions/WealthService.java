@@ -23,6 +23,22 @@ public class WealthService implements IWealthService {
 	private WealthRepository repository;
 
 	@Override
+	public void newWealthRecord(Long userId) {
+
+		Map<String, BigDecimal> wealthMap = new HashMap<>();
+
+		Map<String, Double> currencyMap = getCurrencyRates();
+		for (Map.Entry<String, Double> entry : currencyMap.entrySet()) {
+			wealthMap.put(entry.getKey(), BigDecimal.ZERO);
+		}
+
+		addInitialBalance(wealthMap);
+
+		Wealth userWealth = new Wealth(userId, wealthMap);
+		repository.save(userWealth);
+	}
+
+	@Override
 	public void makeWealthExchange(Long userId, String currency, BigDecimal amount, boolean isBuying) {
 
 		Wealth userWealth = repository.findById(userId).orElseThrow(() -> new UserNotFoundException());
@@ -32,7 +48,7 @@ public class WealthService implements IWealthService {
 			throw new BadRequestException("Invalid currency.");
 		}
 
-		BigDecimal rate = new BigDecimal(getCurrencyRates().get(currency));
+		BigDecimal rate = BigDecimal.valueOf(getCurrencyRates().get(currency));
 		BigDecimal tryEquivalent = amount.divide(rate, 9, RoundingMode.HALF_UP);
 
 		if (isBuying) {
@@ -82,22 +98,6 @@ public class WealthService implements IWealthService {
 	}
 
 	@Override
-	public void newWealthRecord(Long userId) {
-
-		Map<String, BigDecimal> wealthMap = new HashMap<>();
-
-		Map<String, Double> currencyMap = getCurrencyRates();
-		for (Map.Entry<String, Double> entry : currencyMap.entrySet()) {
-			wealthMap.put(entry.getKey(), BigDecimal.ZERO);
-		}
-
-		addInitialBalance(wealthMap);
-
-		Wealth userWealth = new Wealth(userId, wealthMap);
-		repository.save(userWealth);
-	}
-
-	@Override
 	public Wealth findWealth(Long userId) {
 		return repository.findById(userId).orElseThrow(() -> new UserNotFoundException());
 	}
@@ -114,7 +114,7 @@ public class WealthService implements IWealthService {
 		String currency = "TRY";
 
 		BigDecimal currentAmount = wealthMap.get(currency);
-		BigDecimal amountToAdd = new BigDecimal(13000);
+		BigDecimal amountToAdd = new BigDecimal(130000);
 		BigDecimal finalAmount = currentAmount.add(amountToAdd);
 
 		wealthMap.put(currency, finalAmount);

@@ -74,16 +74,24 @@ class MoneyBar extends React.Component {
         if (this.state.ownedCurrencies == null) {
             return null;
         } else if (Object.keys(this.state.ownedCurrencies).length === 0) {
-            return <Alert className="text-center" variant="primary">Possessions make you rich? Your richness is life, forever.</Alert>
+            return <AlertBar barMessage={'Possessions make you rich? Your richness is life, forever.'} />
         } else {
             const barMessage = Object.keys(this.state.ownedCurrencies).map((keyName, index, array) => (
                 <NumberFormat key={keyName} value={this.state.ownedCurrencies[keyName]} displayType={'text'} thousandSeparator={true}
                     suffix={" " + keyName + ((array.length - 1) != index ? ", " : ".")} />))
 
-            return <Alert className="text-center" variant="primary">
-                {barMessage}
-            </Alert>
+            return <AlertBar prefix={'You have'} barMessage={barMessage} />
         }
+    }
+}
+
+class AlertBar extends React.Component {
+    render() {
+        return (
+            <Alert className="text-center" variant="primary">
+                {this.props.prefix} {this.props.barMessage}
+            </Alert>
+        )
     }
 }
 

@@ -9,7 +9,6 @@ import com.demo.bankapp.exception.BadCredentialsException;
 import com.demo.bankapp.exception.UserNotFoundException;
 import com.demo.bankapp.model.User;
 import com.demo.bankapp.repository.UserRepository;
-import com.demo.bankapp.request.CreateNewUserRequest;
 import com.demo.bankapp.request.LoginRequest;
 import com.demo.bankapp.service.abstractions.IUserService;
 
@@ -25,13 +24,12 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public User addNewUser(CreateNewUserRequest request) {
-		User user = new User(request.getUsername(), request.getPassword(), request.getTcno());
+	public User createNewUser(User user) {
 		return repository.save(user);
 	}
 
 	@Override
-	public User login(LoginRequest request) throws UserNotFoundException {
+	public User login(LoginRequest request) {
 
 		User user = findByUserName(request.getUsername());
 

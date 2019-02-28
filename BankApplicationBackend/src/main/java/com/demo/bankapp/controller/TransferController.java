@@ -42,7 +42,7 @@ public class TransferController {
 	TransferResourceAssembler assembler;
 
 	@PostMapping("/create")
-	public Resource<Transfer> makeTransfer(@RequestBody MakeTransferRequest request) {
+	public Resource<Transfer> createTransfer(@RequestBody MakeTransferRequest request) {
 
 		if (request == null || request.getCurrency() == null || request.getCurrency().equals("")) {
 			throw new BadRequestException();
@@ -87,7 +87,7 @@ public class TransferController {
 	}
 
 	private BigDecimal getTryEquivalent(Map<String, Double> currencyRates, String currency, BigDecimal amount) {
-		BigDecimal transferCurrRate = new BigDecimal(currencyRates.get(currency));
+		BigDecimal transferCurrRate = BigDecimal.valueOf(currencyRates.get(currency));
 		return amount.divide(transferCurrRate, 9, RoundingMode.HALF_UP);
 	}
 
@@ -98,7 +98,7 @@ public class TransferController {
 		BigDecimal rate;
 		BigDecimal tryEquivalent;
 		for (Transfer transfer : last24HourTransfers) {
-			rate = new BigDecimal(currencyRates.get(transfer.getCurrency()));
+			rate = BigDecimal.valueOf(currencyRates.get(transfer.getCurrency()));
 			tryEquivalent = transfer.getAmount().divide(rate, 9, RoundingMode.HALF_UP);
 
 			transferTryEquivalent = transferTryEquivalent.add(tryEquivalent);

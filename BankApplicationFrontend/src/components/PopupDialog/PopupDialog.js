@@ -31,18 +31,16 @@ class PopupDialog extends React.Component {
     render() {
 
         return (
-            <div>
-                <Modal show={this.props.usingAsWidget ? true : this.props.show} onHide={this.props.onClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>{this.props.titleEnum == 0 ? "Error" : this.props.titleEnum == 1 ? "Warning" : "Success"}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>{this.props.message}</Modal.Body>
-                    <Modal.Footer>
-                        {this.props.callback ? <Button variant="secondary" onClick={this.props.onClose}>No</Button> : null}
-                        <Button variant="primary" onClick={this.onCloseDialog}>{this.props.callback ? 'Yes' : 'Okay'}</Button>
-                    </Modal.Footer>
-                </Modal>
-            </div>
+            <Modal show={this.props.show} onHide={this.props.onClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>{this.props.titleEnum == 0 ? "Error" : this.props.titleEnum == 1 ? "Warning" : "Success"}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>{this.props.message}</Modal.Body>
+                <Modal.Footer>
+                    {this.props.callback ? <Button variant="secondary" onClick={this.props.onClose}>No</Button> : null}
+                    <Button variant="primary" onClick={this.onCloseDialog}>{this.props.callback ? 'Yes' : 'Okay'}</Button>
+                </Modal.Footer>
+            </Modal>
         );
     }
 }

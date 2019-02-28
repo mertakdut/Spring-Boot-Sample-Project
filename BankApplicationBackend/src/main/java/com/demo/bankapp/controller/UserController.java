@@ -56,7 +56,7 @@ public class UserController {
 			throw new BadRequestException("Invalid TC No.");
 		}
 
-		User user = userService.addNewUser(request);
+		User user = userService.createNewUser(new User(request.getUsername(), request.getPassword(), request.getTcno()));
 		wealthService.newWealthRecord(user.getId());
 
 		return assembler.toResource(user);
