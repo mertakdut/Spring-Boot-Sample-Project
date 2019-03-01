@@ -3,7 +3,6 @@ package com.demo.bankapp.service.abstractions;
 import java.util.List;
 
 import com.demo.bankapp.model.User;
-import com.demo.bankapp.request.LoginRequest;
 
 public interface IUserService {
 
@@ -14,7 +13,5 @@ public interface IUserService {
 	User findByTcno(String tcno);
 
 	User createNewUser(User user);
-
-	User login(String username, String password);
 
 }

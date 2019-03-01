@@ -1,19 +1,23 @@
 package com.demo.bankapp.service.concretions;
 
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.demo.bankapp.exception.BadCredentialsException;
 import com.demo.bankapp.exception.UserNotFoundException;
 import com.demo.bankapp.model.User;
 import com.demo.bankapp.repository.UserRepository;
 import com.demo.bankapp.service.abstractions.IUserService;
 
 @Service
-public class UserService implements IUserService {
+public class UserService implements IUserService, UserDetailsService {
 
 	@Autowired
 	private UserRepository repository;
@@ -30,19 +34,6 @@ public class UserService implements IUserService {
 	public User createNewUser(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		return repository.save(user);
-	}
-
-	@Override
-	public User login(String username, String password) {
-
-		User user = findByUserName(username);
-		String encodedPassword = passwordEncoder.encode(password);
-
-		if (!encodedPassword.equals(user.getPassword())) {
-			throw new BadCredentialsException();
-		}
-
-		return user;
 	}
 
 	@Override
@@ -63,6 +54,17 @@ public class UserService implements IUserService {
 			throw new UserNotFoundException("with TC No: " + tcno);
 		else
 			return user;
+	}
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) {
+		User user = repository.findByUsername(username);
+
+		if (user == null) {
+			throw new UsernameNotFoundException(username);
+		}
+
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), emptyList());
 	}
 
 	// Avoid timing attacks?

@@ -62,21 +62,6 @@ public class UserController {
 		return assembler.toResource(user);
 	}
 
-	@PostMapping("/login")
-	public Resource<User> login(@RequestBody LoginRequest request) {
-
-		if (request == null) {
-			throw new BadRequestException();
-		}
-
-		if (request.getUsername() == null || request.getUsername().equals("") || request.getPassword() == null || request.getPassword().equals("")) {
-			throw new BadRequestException("Invalid credentials.");
-		}
-
-		User user = userService.login(request.getUsername(), request.getPassword());
-		return assembler.toResource(user);
-	}
-
 	private boolean isNumeric(String str) {
 		return Pattern.matches("[0-9]+", str);
 	}
