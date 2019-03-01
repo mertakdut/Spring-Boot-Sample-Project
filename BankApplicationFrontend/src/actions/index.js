@@ -18,9 +18,10 @@ export const closeDialog = {
     type: ACTIONTYPE_HIDEDIALOG
 }
 
-export const login = (username) => ({
+export const login = (username, token) => ({
     type: ACTIONTYPE_LOGIN,
-    username
+    username,
+    token
 })
 
 export const logout = {

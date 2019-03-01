@@ -7,7 +7,8 @@ import { URL_RETRIEVEWEALTH } from '../../config/constants'
 import NumberFormat from 'react-number-format'
 
 const mapStateToProps = state => ({
-    loggedInUsername: state.login,
+    loggedInUsername: state.login != null ? state.login.username : null,
+    token: state.login != null ? state.login.token : null,
     isCurrenciesObsolete: state.currencies
 })
 
@@ -30,14 +31,14 @@ class MoneyBar extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.loggedInUsername != null) {
+        if (this.props.loggedInUsername != null && this.props.token != null) {
             this.retrieveWealthAndUpdateState();
         }
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.loggedInUsername != prevProps.loggedInUsername || this.props.isCurrenciesObsolete) {
-            if (this.props.loggedInUsername != null) {
+            if (this.props.loggedInUsername != null && this.props.token != null) {
                 this.retrieveWealthAndUpdateState();
             } else {
                 this.setState({ ownedCurrencies: null });
@@ -49,7 +50,7 @@ class MoneyBar extends React.Component {
         if (!this.state.isProcessing) {
             this.setState({ isProcessing: true });
 
-            const request = new Request().getRequestInstance();
+            const request = new Request().getRequestInstance(null, this.props.token);
             request.post(URL_RETRIEVEWEALTH, { username: this.props.loggedInUsername })
                 .then((response) => {
                     Object.keys(response.data.wealthMap).map((key) => {
@@ -58,7 +59,7 @@ class MoneyBar extends React.Component {
                     this.props.currenciesUptodate();
                     this.setState({ ownedCurrencies: response.data.wealthMap });
                 }).catch((error) => {
-                    console.log(error);
+                    console.log(error.response);
                     var errorMessage = 'Network error.';
                     if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
                         errorMessage = error.response.data.message;

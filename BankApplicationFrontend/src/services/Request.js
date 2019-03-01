@@ -2,21 +2,14 @@ import axios from 'axios';
 
 class Request {
 
-    constructor() {
-        this.apikey = '123';
-        this.baseUrl = '';
-        this.clientId = '8puWuJWZYls1Ylawxm6CMiYREhsGGSyw';
-        this.token = '';
-    }
-
-    getRequestInstance(externalUrl) {
+    getRequestInstance(externalUrl, token) {
 
         var headers = {
             'Content-Type': 'application/json'
         }
 
-        if (this.token != '' && externalUrl == null) {
-            headers.Authorization = `Bearer ${this.token}`;
+        if (token != null && externalUrl == null) {
+            headers.Authorization = `Bearer ${token}`;
         }
 
         return axios.create({

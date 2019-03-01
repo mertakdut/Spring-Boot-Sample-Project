@@ -5,14 +5,9 @@ import { connect } from 'react-redux'
 import FormElement from '../../FormElement/FormElement';
 import Request from '../../../services/Request';
 import { ERROR_ALLFIELDSMANDATORY, ERROR_DIFFPASS, ERROR_TCNOLENGTH, URL_REGISTER, LSKEY_USERNAME } from '../../../config/constants'
-import { login, showDialog } from '../../../actions';
-
-const mapStateToProps = state => ({
-    isLoggedIn: state.login != null
-})
+import { showDialog } from '../../../actions';
 
 const mapDispatchToProps = dispatch => ({
-    login: (username) => dispatch(login(username)),
     showPopup: (title, message) => dispatch(showDialog(title, message))
 })
 
@@ -26,7 +21,8 @@ class RegisterPage extends React.Component {
             tcno: '',
             firstPass: '',
             secondPass: '',
-            isProcessingRegister: false
+            isProcessingRegister: false,
+            isRegistered: false
         };
 
         this.handleClick = this.handleClick.bind(this);
@@ -61,7 +57,6 @@ class RegisterPage extends React.Component {
         } else if (this.state.tcno.length != 11) {
             this.props.showPopup(1, ERROR_TCNOLENGTH + this.state.tcno.length);
         } else {
-            
             this.setState({
                 isProcessingRegister: true
             });
@@ -73,8 +68,7 @@ class RegisterPage extends React.Component {
                 tcno: this.state.tcno
             }).then((response) => {
                 console.log(response);
-                localStorage.setItem(LSKEY_USERNAME, response.data.username);
-                this.props.login(localStorage.getItem(LSKEY_USERNAME));
+                this.setState({ isRegistered: true });
             }).catch((error) => {
                 console.log(error);
                 var errorMessage = 'Network error';
@@ -95,8 +89,8 @@ class RegisterPage extends React.Component {
             marginTop: '7%'
         };
 
-        if (!this.state.isProcessingRegister && this.props.isLoggedIn) {
-            return <Redirect to='/' />;
+        if (!this.state.isProcessingRegister && this.state.isRegistered) {
+            return <Redirect to='/login' />;
         }
 
         return (
@@ -114,4 +108,4 @@ class RegisterPage extends React.Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterPage)
+export default connect(null, mapDispatchToProps)(RegisterPage)

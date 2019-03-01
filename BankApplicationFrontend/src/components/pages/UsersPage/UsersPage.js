@@ -5,6 +5,10 @@ import UserList from './UserList/UserList'
 import Request from '../../../services/Request';
 import { URL_RETRIEVEALLUSERS } from '../../../config/constants'
 
+const mapStateToProps = state => ({
+    token: state.login != null ? state.login.token : null
+})
+
 const mapDispatchToProps = dispatch => ({
     showPopup: (title, message) => dispatch(showDialog(title, message))
 })
@@ -19,7 +23,7 @@ class UsersPage extends React.Component {
     }
 
     componentDidMount() {
-        const request = new Request().getRequestInstance();
+        const request = new Request().getRequestInstance(null, this.props.token);
         request.get(URL_RETRIEVEALLUSERS)
             .then((response) => {
                 console.log(response);
@@ -41,4 +45,4 @@ class UsersPage extends React.Component {
     }
 }
 
-export default connect(null, mapDispatchToProps)(UsersPage)
+export default connect(mapStateToProps, mapDispatchToProps)(UsersPage)

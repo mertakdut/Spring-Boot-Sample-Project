@@ -28,8 +28,14 @@ class PopupDialog extends React.Component {
         this.props.onClose();
     }
 
+    /*
+    ** There is an issue here:
+    ** Since the state is saved to the store instantly, when popup is used with animations, it's fading away slowly
+    ** and we can see its default state while it is in animation state. I tried to stop the animation by setting animation property to false,
+    ** i.e. animation={false}, but then popup is overlayed to the screen and screen went black.
+    ** https://github.com/react-bootstrap/react-bootstrap/issues/3399
+    */
     render() {
-
         return (
             <Modal show={this.props.show} onHide={this.props.onClose}>
                 <Modal.Header closeButton>

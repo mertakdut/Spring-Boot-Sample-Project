@@ -5,14 +5,14 @@ import { connect } from 'react-redux'
 import FormElement from '../../FormElement/FormElement'
 import Request from '../../../services/Request'
 import { login, showDialog } from '../../../actions'
-import { ERROR_ALLFIELDSMANDATORY, URL_LOGIN, LSKEY_USERNAME } from '../../../config/constants'
+import { ERROR_ALLFIELDSMANDATORY, URL_LOGIN, LSKEY_USERNAME, LSKEY_TOKEN } from '../../../config/constants'
 
 const mapStateToProps = state => ({
     isLoggedIn: state.login != null
 })
 
 const mapDispatchToProps = dispatch => ({
-    login: (username) => dispatch(login(username)),
+    login: (username, token) => dispatch(login(username, token)),
     showPopup: (title, message) => dispatch(showDialog(title, message))
 })
 
@@ -53,11 +53,13 @@ class LoginPage extends React.Component {
                 username: this.state.username,
                 password: this.state.password
             }).then((response) => {
-                console.log(response);
-                localStorage.setItem(LSKEY_USERNAME, response.data.username);
-                this.setState({ isLoggedIn: true });
+                if(response != null && response.data != null) {
+                    localStorage.setItem(LSKEY_USERNAME, this.state.username);
+                    localStorage.setItem(LSKEY_TOKEN, response.data);
+                    this.props.login(this.state.username, response.data);
+                }
             }).catch((error) => {
-                console.log(error);
+                console.log(error.response);
                 var errorMessage = 'Network error';
                 if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
                     errorMessage = error.response.data.message;

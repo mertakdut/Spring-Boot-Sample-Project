@@ -5,10 +5,6 @@ import { showDialog, currenciesObsolete } from '../../../../../actions';
 
 import BuySellModal from './BuySellModal/BuySellModal'
 
-const mapStateToProps = state => ({
-    loggedInUsername: state.login
-})
-
 const mapDispatchToProps = dispatch => ({
     currenciesNeedUpdate: () => dispatch(currenciesObsolete),
     showPopup: (title, message) => dispatch(showDialog(title, message))
@@ -43,7 +39,7 @@ class Currency extends React.Component {
     render() {
 
         const popupDialog = this.state.isShowingBuyPopup ?
-            <BuySellModal isBuying={this.state.isBuying} currency={this.props.currency} rate={this.props.rate} callback={this.onBuyingPopupClosed} username={this.props.loggedInUsername} />
+            <BuySellModal isBuying={this.state.isBuying} currency={this.props.currency} rate={this.props.rate} callback={this.onBuyingPopupClosed} />
             : null;
 
         return (
@@ -68,4 +64,4 @@ class Currency extends React.Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Currency)
+export default connect(null, mapDispatchToProps)(Currency)

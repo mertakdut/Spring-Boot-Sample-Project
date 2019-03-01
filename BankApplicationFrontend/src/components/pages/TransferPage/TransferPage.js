@@ -7,7 +7,8 @@ import { showDialog, currenciesObsolete } from '../../../actions';
 import CurrencyDropdown from './CurrencyDropdown/CurrencyDropdown'
 
 const mapStateToProps = state => ({
-    loggedInUsername: state.login
+    loggedInUsername: state.login != null ? state.login.username : null,
+    token: state.login != null ? state.login.token : null
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -55,7 +56,7 @@ class TransferPage extends React.Component {
                 isProcessingTransfer: true
             });
 
-            const request = new Request().getRequestInstance();
+            const request = new Request().getRequestInstance(null, this.props.token);
             request.post(URL_MAKETRANSFER,
                 {
                     senderUsername: this.props.loggedInUsername,

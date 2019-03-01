@@ -1,8 +1,14 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import NumberFormat from 'react-number-format'
 import { Modal, InputGroup, FormControl, Button } from 'react-bootstrap'
 import Request from '../../../../../../services/Request'
 import {URL_MAKETRANSACTION} from '../../../../../../config/constants'
+
+const mapStateToProps = state => ({
+    loggedInUsername: state.login != null ? state.login.username : null,
+    token: state.login != null ? state.login.token : null
+})
 
 class BuySellModal extends React.Component {
 
@@ -32,10 +38,10 @@ class BuySellModal extends React.Component {
             isProcessingTransaction: true
         });
 
-        const request = new Request().getRequestInstance();
+        const request = new Request().getRequestInstance(null, this.props.token);
         request.post(URL_MAKETRANSACTION,
             {
-                username: this.props.username,
+                username: this.props.loggedInUsername,
                 buying: this.props.isBuying,
                 currency: this.props.currency,
                 amount: this.state.inputAmount
@@ -82,4 +88,4 @@ class BuySellModal extends React.Component {
 
 }
 
-export default BuySellModal;
+export default connect(mapStateToProps, null)(BuySellModal)

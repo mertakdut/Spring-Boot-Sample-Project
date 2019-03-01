@@ -4,7 +4,7 @@ import MainButtonGroup from './MainButtonGroup/MainButtonGroup'
 import WelcomeText from './WelcomeText/WelcomeText'
 
 const mapStateToProps = state => ({
-    loggedInUsername: state.login
+    loggedInUsername: state.login != null ? state.login.username : null
 })
 
 class HomePage extends React.Component {

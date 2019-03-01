@@ -17,10 +17,10 @@ import RegisterPage from '../RegisterPage/RegisterPage'
 import LoginPage from '../LoginPage/LoginPage'
 
 import { login } from '../../../actions'
-import { LSKEY_USERNAME } from '../../../config/constants'
+import { LSKEY_USERNAME, LSKEY_TOKEN } from '../../../config/constants'
 
 const mapDispatchToProps = dispatch => ({
-    login: (username) => dispatch(login(username))
+    login: (username, token) => dispatch(login(username, token))
 })
 
 class MainPage extends React.Component {
@@ -30,7 +30,7 @@ class MainPage extends React.Component {
 
         const storedUsername = localStorage.getItem(LSKEY_USERNAME);
         if (storedUsername != null) {
-            this.props.login(storedUsername);
+            this.props.login(storedUsername, localStorage.getItem(LSKEY_TOKEN));
         }
     }
 

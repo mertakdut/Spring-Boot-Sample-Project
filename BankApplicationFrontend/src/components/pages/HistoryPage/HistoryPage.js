@@ -7,7 +7,8 @@ import EmptyListWrapper from './EmptyListWrapper/EmptyListWrapper'
 import HistoryList from './HistoryList/HistoryList'
 
 const mapStateToProps = state => ({
-    loggedInUsername: state.login
+    loggedInUsername: state.login != null ? state.login.username : null,
+    token: state.login != null ? state.login.token : null
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -19,7 +20,7 @@ class HistoryPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            histories: [],
+            histories: null,
             isRetrievingRecords: false
         };
 
@@ -30,7 +31,7 @@ class HistoryPage extends React.Component {
         if (!this.state.isRetrievingRecords) {
             this.setState({ isRetrievingRecords: true });
 
-            const request = new Request().getRequestInstance();
+            const request = new Request().getRequestInstance(null, this.props.token);
             request.post(URL_RETRIEVEHISTORY, {
                 username: this.props.loggedInUsername
             }).then((response) => {

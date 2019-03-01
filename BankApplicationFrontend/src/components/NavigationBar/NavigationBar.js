@@ -3,10 +3,10 @@ import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Navbar, Nav, NavItem } from 'react-bootstrap'
 import { showDialog, logout } from '../../actions'
-import { LSKEY_USERNAME } from '../../config/constants'
+import { LSKEY_USERNAME, LSKEY_TOKEN } from '../../config/constants'
 
 const mapStateToProps = state => ({
-    loggedInUsername: state.login
+    loggedInUsername: state.login != null ? state.login.username : null
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -35,6 +35,7 @@ class NavBarTop extends React.Component {
 
     onLoggedOut() {
         localStorage.removeItem(LSKEY_USERNAME);
+        localStorage.removeItem(LSKEY_TOKEN);
         this.props.logout();
         this.setState({ hasJustLoggedOut: true });
     }
