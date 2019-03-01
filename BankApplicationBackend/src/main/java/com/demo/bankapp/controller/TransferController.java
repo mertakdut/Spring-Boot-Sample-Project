@@ -26,7 +26,6 @@ import com.demo.bankapp.service.concretions.TransferService;
 
 @RestController
 @RequestMapping(value = "/transfer", produces = { MediaType.APPLICATION_JSON_VALUE })
-@CrossOrigin(origins = "*")
 public class TransferController {
 
 	@Autowired

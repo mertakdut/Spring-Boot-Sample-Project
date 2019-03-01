@@ -24,7 +24,6 @@ import com.demo.bankapp.service.abstractions.IWealthService;
 
 @RestController
 @RequestMapping(value = "/user", produces = { MediaType.APPLICATION_JSON_VALUE })
-@CrossOrigin(origins = "*")
 public class UserController {
 
 	@Autowired

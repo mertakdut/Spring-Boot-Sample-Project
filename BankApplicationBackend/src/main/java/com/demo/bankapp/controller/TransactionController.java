@@ -25,7 +25,6 @@ import com.demo.bankapp.service.concretions.WealthService;
 
 @RestController
 @RequestMapping(value = "/transaction", produces = { MediaType.APPLICATION_JSON_VALUE })
-@CrossOrigin(origins = "*")
 public class TransactionController {
 
 	@Autowired

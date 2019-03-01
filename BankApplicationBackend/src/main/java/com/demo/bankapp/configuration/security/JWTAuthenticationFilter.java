@@ -1,10 +1,12 @@
 package com.demo.bankapp.configuration.security;
 
+import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+import static com.demo.bankapp.configuration.security.SecurityConstants.EXPIRATION_TIME;
+import static com.demo.bankapp.configuration.security.SecurityConstants.SECRET;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -16,14 +18,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
-import static com.demo.bankapp.configuration.security.SecurityConstants.EXPIRATION_TIME;
-import static com.demo.bankapp.configuration.security.SecurityConstants.HEADER_STRING;
-import static com.demo.bankapp.configuration.security.SecurityConstants.SECRET;
-import static com.demo.bankapp.configuration.security.SecurityConstants.TOKEN_PREFIX;
-
 import com.auth0.jwt.JWT;
 import com.demo.bankapp.model.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	
@@ -61,6 +58,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(HMAC512(SECRET.getBytes()));
-        res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+//        res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+        
+        res.setStatus(HttpServletResponse.SC_OK);
+        res.getWriter().write(token);
+        res.getWriter().flush();
+        res.getWriter().close();
     }
 }
