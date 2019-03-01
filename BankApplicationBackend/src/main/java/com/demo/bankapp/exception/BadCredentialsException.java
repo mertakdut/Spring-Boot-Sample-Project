@@ -6,4 +6,8 @@ public class BadCredentialsException extends RuntimeException {
 		super("Bad Credentials.");
 	}
 
+	public BadCredentialsException(String message) {
+		super("Bad Credentials: " + message);
+	}
+
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.bankapp.assembler.UserResourceAssembler;
+import com.demo.bankapp.exception.BadCredentialsException;
 import com.demo.bankapp.exception.BadRequestException;
 import com.demo.bankapp.model.User;
 import com.demo.bankapp.request.CreateNewUserRequest;
@@ -28,7 +29,7 @@ public class UserController {
 	private IWealthService wealthService;
 
 	private UserResourceAssembler assembler;
-	
+
 	@Autowired
 	public UserController(IUserService userService, IWealthService wealthService, UserResourceAssembler assembler) {
 		this.userService = userService;
@@ -54,6 +55,16 @@ public class UserController {
 
 		if (request.getTcno() == null || request.getTcno().length() != 11 || !isNumeric(request.getTcno())) {
 			throw new BadRequestException("Invalid TC No.");
+		}
+
+		boolean isUsernameExist = userService.isUsernameExist(request.getUsername());
+		if (isUsernameExist) {
+			throw new BadCredentialsException("User with the same name exists.");
+		}
+
+		boolean isTcnoExist = userService.isTcNoExist(request.getTcno());
+		if (isTcnoExist) {
+			throw new BadCredentialsException("User with the same tc no exists.");
 		}
 
 		User user = userService.createNewUser(new User(request.getUsername(), request.getPassword(), request.getTcno()));

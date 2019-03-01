@@ -70,4 +70,16 @@ public class UserService implements IUserService, UserDetailsService {
 		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), emptyList());
 	}
 
+	@Override
+	public boolean isUsernameExist(String username) {
+		User user = repository.findByUsername(username);
+		return user != null;
+	}
+	
+	@Override
+	public boolean isTcNoExist(String tcno) {
+		User user = repository.findByTcno(tcno);
+		return user != null;
+	}
+
 }

@@ -13,5 +13,9 @@ public interface IUserService {
 	User findByTcno(String tcno);
 
 	User createNewUser(User user);
+	
+	boolean isUsernameExist(String username);
+	
+	boolean isTcNoExist(String tcno);
 
 }
