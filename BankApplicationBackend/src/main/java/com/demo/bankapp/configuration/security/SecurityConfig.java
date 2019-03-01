@@ -27,13 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-    	http.cors().and().csrf().disable().anonymous().and().authorizeRequests()
-        .antMatchers("/wealth/**").authenticated()
-        .antMatchers("/transfer/**").authenticated()
-        .antMatchers("/transaction/**").authenticated()
-        .antMatchers("/user/find/all").authenticated()
-        .antMatchers("/user/login").authenticated()
-        .antMatchers(HttpMethod.POST, "/user/create").permitAll()
+    	http.cors().and().csrf().disable().authorizeRequests()
+    	.antMatchers("/user/create").permitAll()
+        .anyRequest().authenticated()
         .and()
         .addFilter(new JWTAuthenticationFilter(authenticationManager()))
         .addFilter(new JWTAuthorizationFilter(authenticationManager()))

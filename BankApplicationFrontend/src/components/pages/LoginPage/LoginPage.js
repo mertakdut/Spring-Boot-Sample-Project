@@ -60,7 +60,7 @@ class LoginPage extends React.Component {
                 }
             }).catch((error) => {
                 console.log(error.response);
-                var errorMessage = 'Network error';
+                var errorMessage = 'Authorization Error';
                 if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
                     errorMessage = error.response.data.message;
                 }
