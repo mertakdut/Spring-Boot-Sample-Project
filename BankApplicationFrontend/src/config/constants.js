@@ -29,3 +29,6 @@ export const URL_RETRIEVEWEALTH = 'wealth/retrieve';
 // Local storage keys
 export const LSKEY_USERNAME = 'username';
 export const LSKEY_TOKEN = 'token';
+export const LSKEY_TOKEN_EXPIRATIONTIME = 'tokenExpirationTime';
+
+export const TOKEN_EXPIRATION_TIME = 24 * 10; // 10 days.

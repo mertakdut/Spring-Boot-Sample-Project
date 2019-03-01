@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import FormElement from '../../FormElement/FormElement'
 import Request from '../../../services/Request'
 import { login, showDialog } from '../../../actions'
-import { ERROR_ALLFIELDSMANDATORY, URL_LOGIN, LSKEY_USERNAME, LSKEY_TOKEN } from '../../../config/constants'
+import { ERROR_ALLFIELDSMANDATORY, URL_LOGIN, LSKEY_USERNAME, LSKEY_TOKEN, LSKEY_TOKEN_EXPIRATIONTIME, TOKEN_EXPIRATION_TIME } from '../../../config/constants'
 
 const mapStateToProps = state => ({
     isLoggedIn: state.login != null
@@ -54,9 +54,16 @@ class LoginPage extends React.Component {
                 password: this.state.password
             }).then((response) => {
                 if(response != null && response.data != null) {
-                    localStorage.setItem(LSKEY_USERNAME, this.state.username);
+                    const username = this.state.username;
+
+                    localStorage.setItem(LSKEY_USERNAME, username);
                     localStorage.setItem(LSKEY_TOKEN, response.data);
-                    this.props.login(this.state.username, response.data);
+
+                    var tokenExpirationTime = new Date();
+                    tokenExpirationTime.setHours(tokenExpirationTime.getHours() + TOKEN_EXPIRATION_TIME);
+                    localStorage.setItem(LSKEY_TOKEN_EXPIRATIONTIME, tokenExpirationTime);
+
+                    this.props.login(username, response.data);
                 }
             }).catch((error) => {
                 console.log(error.response);

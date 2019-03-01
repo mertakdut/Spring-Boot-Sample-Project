@@ -17,7 +17,7 @@ import RegisterPage from '../RegisterPage/RegisterPage'
 import LoginPage from '../LoginPage/LoginPage'
 
 import { login } from '../../../actions'
-import { LSKEY_USERNAME, LSKEY_TOKEN } from '../../../config/constants'
+import { LSKEY_USERNAME, LSKEY_TOKEN, LSKEY_TOKEN_EXPIRATIONTIME } from '../../../config/constants'
 
 const mapDispatchToProps = dispatch => ({
     login: (username, token) => dispatch(login(username, token))
@@ -30,7 +30,14 @@ class MainPage extends React.Component {
 
         const storedUsername = localStorage.getItem(LSKEY_USERNAME);
         if (storedUsername != null) {
-            this.props.login(storedUsername, localStorage.getItem(LSKEY_TOKEN));
+            const tokenExpirationTime = localStorage.getItem(LSKEY_TOKEN_EXPIRATIONTIME);
+            if (new Date() > tokenExpirationTime) {
+                localStorage.removeItem(LSKEY_USERNAME);
+                localStorage.removeItem(LSKEY_TOKEN);
+                localStorage.removeItem(LSKEY_TOKEN_EXPIRATIONTIME);
+            } else {
+                this.props.login(storedUsername, localStorage.getItem(LSKEY_TOKEN));
+            }
         }
     }
 

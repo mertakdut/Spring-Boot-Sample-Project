@@ -29,7 +29,7 @@ class UsersPage extends React.Component {
                 console.log(response);
                 this.setState({ users: response.data });
             }).catch((error) => {
-                console.log(error);
+                console.log(error.response);
                 var errorMessage = 'Network error.';
                 if (error != null && error.response != null && error.response.data != null && error.response.data.message != null) {
                     errorMessage = error.response.data.message;
