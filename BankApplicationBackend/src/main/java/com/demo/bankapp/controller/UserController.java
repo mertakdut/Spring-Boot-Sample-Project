@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +17,6 @@ import com.demo.bankapp.assembler.UserResourceAssembler;
 import com.demo.bankapp.exception.BadRequestException;
 import com.demo.bankapp.model.User;
 import com.demo.bankapp.request.CreateNewUserRequest;
-import com.demo.bankapp.request.LoginRequest;
 import com.demo.bankapp.service.abstractions.IUserService;
 import com.demo.bankapp.service.abstractions.IWealthService;
 
@@ -26,14 +24,17 @@ import com.demo.bankapp.service.abstractions.IWealthService;
 @RequestMapping(value = "/user", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class UserController {
 
-	@Autowired
 	private IUserService userService;
-
-	@Autowired
 	private IWealthService wealthService;
 
-	@Autowired
 	private UserResourceAssembler assembler;
+	
+	@Autowired
+	public UserController(IUserService userService, IWealthService wealthService, UserResourceAssembler assembler) {
+		this.userService = userService;
+		this.wealthService = wealthService;
+		this.assembler = assembler;
+	}
 
 	@GetMapping("/find/all")
 	public List<Resource<User>> findAll() {

@@ -13,6 +13,7 @@ import com.demo.bankapp.model.Transfer;
 public interface TransferRepository extends JpaRepository<Transfer, Long> {
 
 	@Query(value = "SELECT t FROM Transfer t WHERE t.fromUserId = :userId and t.transferTime >= DATEADD(day, -1, GETDATE())")
+	
 	List<Transfer> findAllTransfersFrom24Hours(@Param("userId") Long userId);
 
 }

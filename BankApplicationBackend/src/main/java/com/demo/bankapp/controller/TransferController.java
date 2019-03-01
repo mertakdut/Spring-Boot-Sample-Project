@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,25 +19,27 @@ import com.demo.bankapp.exception.TransactionLimitException;
 import com.demo.bankapp.model.Transfer;
 import com.demo.bankapp.model.User;
 import com.demo.bankapp.request.MakeTransferRequest;
+import com.demo.bankapp.service.abstractions.ITransferService;
 import com.demo.bankapp.service.abstractions.IUserService;
 import com.demo.bankapp.service.abstractions.IWealthService;
-import com.demo.bankapp.service.concretions.TransferService;
 
 @RestController
 @RequestMapping(value = "/transfer", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class TransferController {
 
-	@Autowired
-	IUserService userService;
+	private IUserService userService;
+	private IWealthService wealthService;
+	private ITransferService transferService;
+
+	private TransferResourceAssembler assembler;
 
 	@Autowired
-	IWealthService wealthService;
-
-	@Autowired
-	TransferService transferService;
-
-	@Autowired
-	TransferResourceAssembler assembler;
+	public TransferController(IUserService userService, IWealthService wealthService, ITransferService transferService, TransferResourceAssembler assembler) {
+		this.userService = userService;
+		this.wealthService = wealthService;
+		this.transferService = transferService;
+		this.assembler = assembler;
+	}
 
 	@PostMapping("/create")
 	public Resource<Transfer> createTransfer(@RequestBody MakeTransferRequest request) {
@@ -91,7 +92,6 @@ public class TransferController {
 	}
 
 	private void checkDailyTransferLimitExceedition(Map<String, Double> currencyRates, List<Transfer> last24HourTransfers, BigDecimal transferTryEquivalent) {
-
 		BigDecimal dailyTransferLimit = new BigDecimal(100000);
 
 		BigDecimal rate;

@@ -13,8 +13,12 @@ import com.demo.bankapp.service.abstractions.ITransactionService;
 @Service
 public class TransactionService implements ITransactionService {
 
+	private TransactionRepository repository;
+
 	@Autowired
-	TransactionRepository repository;
+	public TransactionService(TransactionRepository repository) {
+		this.repository = repository;
+	}
 
 	@Override
 	public Transaction createNewTransaction(Long userId, boolean isBuying, String currency, BigDecimal amount) {

@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,25 +18,27 @@ import com.demo.bankapp.model.Transaction;
 import com.demo.bankapp.model.User;
 import com.demo.bankapp.request.FindAllByUserRequest;
 import com.demo.bankapp.request.MakeTransactionRequest;
-import com.demo.bankapp.service.concretions.TransactionService;
-import com.demo.bankapp.service.concretions.UserService;
-import com.demo.bankapp.service.concretions.WealthService;
+import com.demo.bankapp.service.abstractions.ITransactionService;
+import com.demo.bankapp.service.abstractions.IUserService;
+import com.demo.bankapp.service.abstractions.IWealthService;
 
 @RestController
 @RequestMapping(value = "/transaction", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class TransactionController {
+	
+	private ITransactionService transactionService;
+	private IUserService userService;
+	private IWealthService wealthService;
+	
+	private TransactionResourceAssembler assembler;
 
 	@Autowired
-	TransactionResourceAssembler assembler;
-
-	@Autowired
-	TransactionService transactionService;
-
-	@Autowired
-	UserService userService;
-
-	@Autowired
-	WealthService userWealthService;
+	public TransactionController(ITransactionService transactionService, IUserService userService, IWealthService wealthService, TransactionResourceAssembler assembler) {
+		this.transactionService = transactionService;
+		this.userService = userService;
+		this.wealthService = wealthService;
+		this.assembler = assembler;
+	}
 
 	@PostMapping("/create")
 	public Resource<Transaction> createTransaction(@RequestBody MakeTransactionRequest request) {
@@ -69,7 +70,7 @@ public class TransactionController {
 			throw new DailyOperationLimitReachedException();
 		}
 
-		userWealthService.makeWealthExchange(user.getId(), request.getCurrency(), request.getAmount(), request.isBuying());
+		wealthService.makeWealthExchange(user.getId(), request.getCurrency(), request.getAmount(), request.isBuying());
 		Transaction transaction = transactionService.createNewTransaction(user.getId(), request.isBuying(), request.getCurrency(), request.getAmount());
 
 		return assembler.toResource(transaction);

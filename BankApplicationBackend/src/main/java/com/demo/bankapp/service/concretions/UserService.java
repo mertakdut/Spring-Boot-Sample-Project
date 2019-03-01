@@ -19,11 +19,14 @@ import com.demo.bankapp.service.abstractions.IUserService;
 @Service
 public class UserService implements IUserService, UserDetailsService {
 
-	@Autowired
 	private UserRepository repository;
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
+		this.repository = repository;
+		this.passwordEncoder = passwordEncoder;
+	}
 
 	@Override
 	public List<User> findAll() {
@@ -55,7 +58,7 @@ public class UserService implements IUserService, UserDetailsService {
 		else
 			return user;
 	}
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) {
 		User user = repository.findByUsername(username);
@@ -66,18 +69,5 @@ public class UserService implements IUserService, UserDetailsService {
 
 		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), emptyList());
 	}
-
-	// Avoid timing attacks?
-	// private boolean isEqual(byte[] a, byte[] b) {
-	// if (a.length != b.length) {
-	// return false;
-	// }
-	//
-	// int result = 0;
-	// for (int i = 0; i < a.length; i++) {
-	// result |= a[i] ^ b[i];
-	// }
-	// return result == 0;
-	// }
 
 }

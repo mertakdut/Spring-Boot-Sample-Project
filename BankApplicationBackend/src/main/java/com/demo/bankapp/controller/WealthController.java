@@ -3,7 +3,6 @@ package com.demo.bankapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,14 +20,17 @@ import com.demo.bankapp.service.abstractions.IWealthService;
 @RequestMapping(value = "/wealth", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class WealthController {
 
-	@Autowired
 	private IWealthService wealthService;
-
-	@Autowired
 	private IUserService userService;
 
-	@Autowired
 	private WealthResourceAssembler assembler;
+
+	@Autowired
+	public WealthController(IWealthService wealthService, IUserService userService, WealthResourceAssembler assembler) {
+		this.wealthService = wealthService;
+		this.userService = userService;
+		this.assembler = assembler;
+	}
 
 	@PostMapping("/retrieve")
 	public Resource<Wealth> retrieveWealth(@RequestBody RetrieveWealthRequest request) {

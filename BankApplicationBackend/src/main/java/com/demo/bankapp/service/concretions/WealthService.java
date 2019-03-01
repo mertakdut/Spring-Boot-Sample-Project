@@ -19,8 +19,12 @@ import com.demo.bankapp.service.abstractions.IWealthService;
 @Service
 public class WealthService implements IWealthService {
 
-	@Autowired
 	private WealthRepository repository;
+
+	@Autowired
+	public WealthService(WealthRepository repository) {
+		this.repository = repository;
+	}
 
 	@Override
 	public void newWealthRecord(Long userId) {
