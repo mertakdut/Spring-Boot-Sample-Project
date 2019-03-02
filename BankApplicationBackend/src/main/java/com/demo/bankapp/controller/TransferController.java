@@ -6,19 +6,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.demo.bankapp.assembler.TransferResourceAssembler;
 import com.demo.bankapp.exception.BadRequestException;
 import com.demo.bankapp.exception.TransactionLimitException;
 import com.demo.bankapp.model.Transfer;
 import com.demo.bankapp.model.User;
-import com.demo.bankapp.request.MakeTransferRequest;
+import com.demo.bankapp.request.CreateTransferRequest;
+import com.demo.bankapp.response.CreateTransferResponse;
 import com.demo.bankapp.service.abstractions.ITransferService;
 import com.demo.bankapp.service.abstractions.IUserService;
 import com.demo.bankapp.service.abstractions.IWealthService;
@@ -31,20 +30,17 @@ public class TransferController {
 	private IWealthService wealthService;
 	private ITransferService transferService;
 
-	private TransferResourceAssembler assembler;
-
 	@Autowired
-	public TransferController(IUserService userService, IWealthService wealthService, ITransferService transferService, TransferResourceAssembler assembler) {
+	public TransferController(IUserService userService, IWealthService wealthService, ITransferService transferService) {
 		this.userService = userService;
 		this.wealthService = wealthService;
 		this.transferService = transferService;
-		this.assembler = assembler;
 	}
 
 	@PostMapping("/create")
-	public Resource<Transfer> createTransfer(@RequestBody MakeTransferRequest request) {
+	public CreateTransferResponse createTransfer(@RequestBody CreateTransferRequest request) {
 
-		if (request == null || request.getCurrency() == null || request.getCurrency().equals("")) {
+		if (request.getCurrency() == null || request.getCurrency().equals("")) {
 			throw new BadRequestException();
 		}
 
@@ -52,7 +48,7 @@ public class TransferController {
 			throw new BadRequestException("User not found.");
 		}
 
-		if (request.getReceiverTcno() == null || request.getReceiverTcno().equals("")) {
+		if (request.getReceiverTcno() == null || request.getReceiverTcno().equals("") || request.getReceiverTcno().length() != 11) {
 			throw new BadRequestException("Invalid TCNo.");
 		}
 
@@ -83,7 +79,10 @@ public class TransferController {
 		wealthService.makeWealthTransaction(receiverUser.getId(), request.getCurrency(), request.getAmount(), true);
 
 		Transfer transfer = transferService.createNewTransfer(new Transfer(senderUser.getId(), receiverUser.getId(), request.getCurrency(), request.getAmount()));
-		return assembler.toResource(transfer);
+		
+		CreateTransferResponse response = new CreateTransferResponse();
+		response.setTransfer(transfer);
+		return response;
 	}
 
 	private BigDecimal getTryEquivalent(Map<String, Double> currencyRates, String currency, BigDecimal amount) {

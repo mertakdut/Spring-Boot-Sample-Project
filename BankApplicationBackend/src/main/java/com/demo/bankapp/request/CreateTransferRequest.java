@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class MakeTransferRequest extends BaseRequest {
+public class CreateTransferRequest extends BaseRequest {
 
 	private String senderUsername;
 	private String receiverTcno;

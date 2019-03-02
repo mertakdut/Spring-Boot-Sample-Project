@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class MakeTransactionRequest extends BaseRequest {
+public class CreateTransactionRequest extends BaseRequest {
 
 	private String username;
 	private boolean isBuying;

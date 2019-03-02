@@ -27,6 +27,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.demo.bankapp.exception.BadCredentialsException;
 import com.demo.bankapp.exception.BadRequestException;
+import com.demo.bankapp.exception.DailyOperationLimitReachedException;
 import com.demo.bankapp.exception.InsufficientFundsException;
 import com.demo.bankapp.exception.TransactionLimitException;
 import com.demo.bankapp.exception.UserNotFoundException;
@@ -179,6 +180,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler({ TransactionLimitException.class })
 	public ResponseEntity<Object> handle(final TransactionLimitException ex, final WebRequest request) {
+		final ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, ex.getLocalizedMessage(), "error occurred");
+		return buildResponseEntity(ex, apiError);
+	}
+	
+	@ExceptionHandler({ DailyOperationLimitReachedException.class })
+	public ResponseEntity<Object> handle(final DailyOperationLimitReachedException ex, final WebRequest request) {
 		final ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, ex.getLocalizedMessage(), "error occurred");
 		return buildResponseEntity(ex, apiError);
 	}

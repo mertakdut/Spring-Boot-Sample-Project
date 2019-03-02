@@ -2,10 +2,8 @@ package com.demo.bankapp.controller;
 
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,11 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.demo.bankapp.assembler.UserResourceAssembler;
 import com.demo.bankapp.exception.BadCredentialsException;
 import com.demo.bankapp.exception.BadRequestException;
 import com.demo.bankapp.model.User;
-import com.demo.bankapp.request.CreateNewUserRequest;
+import com.demo.bankapp.request.CreateUserRequest;
+import com.demo.bankapp.response.CreateUserResponse;
+import com.demo.bankapp.response.FindAllUsersResponse;
 import com.demo.bankapp.service.abstractions.IUserService;
 import com.demo.bankapp.service.abstractions.IWealthService;
 
@@ -28,26 +27,23 @@ public class UserController {
 	private IUserService userService;
 	private IWealthService wealthService;
 
-	private UserResourceAssembler assembler;
-
 	@Autowired
-	public UserController(IUserService userService, IWealthService wealthService, UserResourceAssembler assembler) {
+	public UserController(IUserService userService, IWealthService wealthService) {
 		this.userService = userService;
 		this.wealthService = wealthService;
-		this.assembler = assembler;
 	}
 
 	@GetMapping("/find/all")
-	public List<Resource<User>> findAll() {
-		return userService.findAll().stream().map(assembler::toResource).collect(Collectors.toList());
+	public FindAllUsersResponse findAll() {
+		List<User> userList = userService.findAll();
+		
+		FindAllUsersResponse response = new FindAllUsersResponse();
+		response.setUserList(userList);
+		return response;
 	}
 
 	@PostMapping("/create")
-	public Resource<User> createNewUser(@RequestBody CreateNewUserRequest request) {
-
-		if (request == null) {
-			throw new BadRequestException();
-		}
+	public CreateUserResponse createUser(@RequestBody CreateUserRequest request) {
 
 		if (request.getUsername() == null || request.getUsername().equals("") || request.getPassword() == null || request.getPassword().equals("")) {
 			throw new BadRequestException("Invalid credentials.");
@@ -70,7 +66,10 @@ public class UserController {
 		User user = userService.createNewUser(new User(request.getUsername(), request.getPassword(), request.getTcno()));
 		wealthService.newWealthRecord(user.getId());
 
-		return assembler.toResource(user);
+		CreateUserResponse response = new CreateUserResponse();
+		response.setUsername(user.getUsername());
+		response.setTcno(user.getTcno());
+		return response;
 	}
 
 	private boolean isNumeric(String str) {

@@ -2,6 +2,8 @@ package com.demo.bankapp.exception;
 
 public class InsufficientFundsException extends RuntimeException {
 
+	private static final long serialVersionUID = 8435355771655372975L;
+
 	public InsufficientFundsException() {
 		super("Insufficient Funds: Not enough TRY.");
 	}

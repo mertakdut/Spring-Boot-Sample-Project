@@ -8,7 +8,7 @@ import org.springframework.core.annotation.Order;
 
 import com.demo.bankapp.controller.UserController;
 import com.demo.bankapp.repository.UserRepository;
-import com.demo.bankapp.request.CreateNewUserRequest;
+import com.demo.bankapp.request.CreateUserRequest;
 
 @Configuration
 class DatabaseMocker {
@@ -17,24 +17,24 @@ class DatabaseMocker {
 	@Order(Ordered.HIGHEST_PRECEDENCE)
 	CommandLineRunner initDatabase(UserRepository repository, UserController userController) {
 		return args -> {
-			CreateNewUserRequest cnuRequest = new CreateNewUserRequest();
+			CreateUserRequest cnuRequest = new CreateUserRequest();
 			cnuRequest.setUsername("Mert");
 			cnuRequest.setPassword("mert123");
 			cnuRequest.setTcno("21412322112");
 
-			CreateNewUserRequest cnuRequest2 = new CreateNewUserRequest();
+			CreateUserRequest cnuRequest2 = new CreateUserRequest();
 			cnuRequest2.setUsername("Mert2");
 			cnuRequest2.setPassword("mert1234");
 			cnuRequest2.setTcno("23141232212");
 
-			CreateNewUserRequest cnuRequest3 = new CreateNewUserRequest();
+			CreateUserRequest cnuRequest3 = new CreateUserRequest();
 			cnuRequest3.setUsername("Mert3");
 			cnuRequest3.setPassword("mert12345");
 			cnuRequest3.setTcno("23141232213");
 
-			userController.createNewUser(cnuRequest);
-			userController.createNewUser(cnuRequest2);
-			userController.createNewUser(cnuRequest3);
+			userController.createUser(cnuRequest);
+			userController.createUser(cnuRequest2);
+			userController.createUser(cnuRequest3);
 		};
 	}
 }
