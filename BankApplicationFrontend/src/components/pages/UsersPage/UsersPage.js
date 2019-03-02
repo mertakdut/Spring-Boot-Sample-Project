@@ -27,7 +27,7 @@ class UsersPage extends React.Component {
         request.get(URL_RETRIEVEALLUSERS)
             .then((response) => {
                 console.log(response);
-                this.setState({ users: response.data });
+                this.setState({ users: response.data.userList });
             }).catch((error) => {
                 console.log(error.response);
                 var errorMessage = 'Network error.';

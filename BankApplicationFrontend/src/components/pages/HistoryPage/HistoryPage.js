@@ -36,7 +36,7 @@ class HistoryPage extends React.Component {
                 username: this.props.loggedInUsername
             }).then((response) => {
                 console.log(response);
-                this.setState({ histories: response.data });
+                this.setState({ histories: response.data.transactionList });
             }).catch((error) => {
                 console.log(error.response);
                 var errorMessage = 'Network error';

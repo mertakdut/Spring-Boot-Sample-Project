@@ -65,7 +65,7 @@ class TransferPage extends React.Component {
                     amount: this.state.amount
                 }).then((response) => {
                     console.log(response);
-                    this.props.showPopup(2, 'Successfully transfered ' + response.data.amount + " " + response.data.currency + " to " + this.state.tcno + ".");
+                    this.props.showPopup(2, 'Successfully transfered ' + response.data.transfer.amount + " " + response.data.transfer.currency + " to " + this.state.tcno + ".");
                     this.props.currenciesNeedUpdate();
                 }).catch((error) => {
                     console.log(error.response != null ? error.response : error);

@@ -53,11 +53,11 @@ class MoneyBar extends React.Component {
             const request = new Request().getRequestInstance(null, this.props.token);
             request.post(URL_RETRIEVEWEALTH, { username: this.props.loggedInUsername })
                 .then((response) => {
-                    Object.keys(response.data.wealthMap).map((key) => {
-                        if (response.data.wealthMap[key] == 0) delete response.data.wealthMap[key];
+                    Object.keys(response.data.wealth.wealthMap).map((key) => {
+                        if (response.data.wealth.wealthMap[key] == 0) delete response.data.wealth.wealthMap[key];
                     });
                     this.props.currenciesUptodate();
-                    this.setState({ ownedCurrencies: response.data.wealthMap });
+                    this.setState({ ownedCurrencies: response.data.wealth.wealthMap });
                 }).catch((error) => {
                     console.log(error.response);
                     var errorMessage = 'Network error.';
