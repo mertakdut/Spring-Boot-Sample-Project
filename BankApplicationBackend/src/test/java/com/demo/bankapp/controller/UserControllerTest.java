@@ -129,7 +129,7 @@ public class UserControllerTest {
 		}
 		
 		if (request.getTcno() != null && request.getTcno().equals("55555555555")) {
-			Mockito.when(userService.isTcNoExist(Mockito.anyString())).thenReturn(Boolean.TRUE);
+			Mockito.when(userService.isTcnoExist(Mockito.anyString())).thenReturn(Boolean.TRUE);
 			shouldThrowBadCredentials = true;
 		}
 		

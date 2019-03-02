@@ -77,7 +77,7 @@ public class UserService implements IUserService, UserDetailsService {
 	}
 	
 	@Override
-	public boolean isTcNoExist(String tcno) {
+	public boolean isTcnoExist(String tcno) {
 		User user = repository.findByTcno(tcno);
 		return user != null;
 	}

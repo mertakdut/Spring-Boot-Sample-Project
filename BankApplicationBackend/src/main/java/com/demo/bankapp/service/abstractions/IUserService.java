@@ -16,6 +16,6 @@ public interface IUserService {
 	
 	boolean isUsernameExist(String username);
 	
-	boolean isTcNoExist(String tcno);
+	boolean isTcnoExist(String tcno);
 
 }

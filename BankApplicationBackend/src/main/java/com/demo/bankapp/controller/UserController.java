@@ -58,7 +58,7 @@ public class UserController {
 			throw new BadCredentialsException("User with the same name exists.");
 		}
 
-		boolean isTcnoExist = userService.isTcNoExist(request.getTcno());
+		boolean isTcnoExist = userService.isTcnoExist(request.getTcno());
 		if (isTcnoExist) {
 			throw new BadCredentialsException("User with the same tc no exists.");
 		}
