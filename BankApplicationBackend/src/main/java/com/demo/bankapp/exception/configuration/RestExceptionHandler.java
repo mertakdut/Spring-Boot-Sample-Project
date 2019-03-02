@@ -40,7 +40,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 			final WebRequest request) {
 		logger.info(ex.getClass().getName());
 		//
-		final List<String> errors = new ArrayList<String>();
+		final List<String> errors = new ArrayList<>();
 		for (final FieldError error : ex.getBindingResult().getFieldErrors()) {
 			errors.add(error.getField() + ": " + error.getDefaultMessage());
 		}
@@ -55,7 +55,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleBindException(final BindException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
 		logger.info(ex.getClass().getName());
 		//
-		final List<String> errors = new ArrayList<String>();
+		final List<String> errors = new ArrayList<>();
 		for (final FieldError error : ex.getBindingResult().getFieldErrors()) {
 			errors.add(error.getField() + ": " + error.getDefaultMessage());
 		}
@@ -122,17 +122,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		final ApiError apiError = new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ex.getLocalizedMessage(), builder.substring(0, builder.length() - 2));
 		return buildResponseEntity(ex, apiError);
 	}
-
-	// 500
-
-	// @ExceptionHandler({ Exception.class })
-	// public ResponseEntity<Object> handleAll(final Exception ex, final WebRequest request) {
-	// logger.info(ex.getClass().getName());
-	// logger.error("error", ex);
-	// //
-	// final ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
-	// return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
-	// }
 	
 	@ExceptionHandler({ MethodArgumentTypeMismatchException.class })
 	public ResponseEntity<Object> handleMethodArgumentTypeMismatch(final MethodArgumentTypeMismatchException ex, final WebRequest request) {
@@ -143,7 +132,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler({ ConstraintViolationException.class })
 	public ResponseEntity<Object> handleConstraintViolation(final ConstraintViolationException ex, final WebRequest request) {
-		final List<String> errors = new ArrayList<String>();
+		final List<String> errors = new ArrayList<>();
 		for (final ConstraintViolation<?> violation : ex.getConstraintViolations()) {
 			errors.add(violation.getRootBeanClass().getName() + " " + violation.getPropertyPath() + ": " + violation.getMessage());
 		}
@@ -194,7 +183,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		logger.info(ex.getClass().getName());
 		logger.error("error", ex);
 
-		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+		return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
 	}
 
 }
