@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.demo.bankapp.configuration.Constants;
 import com.demo.bankapp.exception.BadRequestException;
 import com.demo.bankapp.exception.TransactionLimitException;
 import com.demo.bankapp.model.Transfer;
@@ -41,19 +42,19 @@ public class TransferController {
 	public CreateTransferResponse createTransfer(@RequestBody CreateTransferRequest request) {
 
 		if (request.getCurrency() == null || request.getCurrency().equals("")) {
-			throw new BadRequestException();
+			throw new BadRequestException(Constants.MESSAGE_INVALIDCURRENCY);
 		}
 
 		if (request.getSenderUsername() == null || request.getSenderUsername().equals("")) {
-			throw new BadRequestException("User not found.");
+			throw new BadRequestException(Constants.MESSAGE_INVALIDUSERNAME);
 		}
 
 		if (request.getReceiverTcno() == null || request.getReceiverTcno().equals("") || request.getReceiverTcno().length() != 11) {
-			throw new BadRequestException("Invalid TCNo.");
+			throw new BadRequestException();
 		}
 
 		if (request.getAmount() == null || request.getAmount().signum() == 0 || request.getAmount().signum() == -1) {
-			throw new BadRequestException("Please enter a valid amount.");
+			throw new BadRequestException(Constants.MESSAGE_INVALIDAMOUNT);
 		}
 
 		Map<String, Double> currencyRates = wealthService.getCurrencyRates();
@@ -61,7 +62,7 @@ public class TransferController {
 		BigDecimal singleTransferLimit = new BigDecimal(20000);
 		BigDecimal tryEquivalent = getTryEquivalent(currencyRates, request.getCurrency(), request.getAmount());
 		if (tryEquivalent.compareTo(singleTransferLimit) == 1) {
-			throw new TransactionLimitException("Exceeded Maximum Value Per Transaction.");
+			throw new TransactionLimitException(Constants.MESSAGE_EXCEEDEDMAXVALUE);
 		}
 
 		User senderUser = userService.findByUserName(request.getSenderUsername());
@@ -72,7 +73,7 @@ public class TransferController {
 		User receiverUser = userService.findByTcno(request.getReceiverTcno());
 
 		if (senderUser.equals(receiverUser)) {
-			throw new BadRequestException("You can't send money to yourself.");
+			throw new BadRequestException(Constants.MESSAGE_SAMEUSERTRANSACTION);
 		}
 
 		wealthService.makeWealthTransaction(senderUser.getId(), request.getCurrency(), request.getAmount(), false);
@@ -101,7 +102,7 @@ public class TransferController {
 
 			transferTryEquivalent = transferTryEquivalent.add(tryEquivalent);
 			if (transferTryEquivalent.compareTo(dailyTransferLimit) != -1) {
-				throw new TransactionLimitException("Exceeded Maximum Transaction Value For the Day.");
+				throw new TransactionLimitException(Constants.MESSAGE_EXCEEDEDMAXVALUEFORDAY);
 			}
 		}
 

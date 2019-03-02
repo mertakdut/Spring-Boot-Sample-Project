@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.demo.bankapp.configuration.Constants;
 import com.demo.bankapp.exception.BadRequestException;
 import com.demo.bankapp.exception.DailyOperationLimitReachedException;
 import com.demo.bankapp.model.Transaction;
@@ -40,13 +41,13 @@ public class TransactionController {
 	public CreateTransactionResponse createTransaction(@RequestBody CreateTransactionRequest request) {
 
 		if (request.getUsername() == null || request.getUsername().equals("")) {
-			throw new BadRequestException("Invalid username.");
+			throw new BadRequestException(Constants.MESSAGE_INVALIDUSERNAME);
 		} else if (request.getCurrency() == null || request.getCurrency().equals("")) {
-			throw new BadRequestException("Invalid currency.");
+			throw new BadRequestException(Constants.MESSAGE_INVALIDCURRENCY);
 		} else if (request.getAmount() == null || request.getAmount().signum() == 0 || request.getAmount().signum() == -1) {
-			throw new BadRequestException("Invalid amount.");
-		} else if (request.getCurrency().equals("TRY")) {
-			throw new BadRequestException("You can't make transactions with TRY.");
+			throw new BadRequestException(Constants.MESSAGE_INVALIDAMOUNT);
+		} else if (request.getCurrency().equals(Constants.MAIN_CURRENCY)) {
+			throw new BadRequestException(Constants.MESSAGE_EXCHANGESWITHMAINCURRENCY);
 		}
 
 		User user = userService.findByUserName(request.getUsername());
@@ -68,7 +69,7 @@ public class TransactionController {
 	public FindAllTransactionsByUserResponse findAll(@RequestBody FindAllTransactionsByUserRequest request) {
 
 		if (request.getUsername() == null || request.getUsername().equals("")) {
-			throw new BadRequestException("Invalid username.");
+			throw new BadRequestException(Constants.MESSAGE_INVALIDUSERNAME);
 		}
 
 		User user = userService.findByUserName(request.getUsername());

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.demo.bankapp.configuration.Constants;
 import com.demo.bankapp.exception.BadRequestException;
 import com.demo.bankapp.model.User;
 import com.demo.bankapp.model.Wealth;
@@ -32,7 +33,7 @@ public class WealthController {
 	public RetrieveWealthResponse retrieveWealth(@RequestBody RetrieveWealthRequest request) {
 
 		if (request.getUsername() == null || request.getUsername().equals("")) {
-			throw new BadRequestException("Invalid username.");
+			throw new BadRequestException(Constants.MESSAGE_INVALIDUSERNAME);
 		}
 
 		User user = userService.findByUserName(request.getUsername());

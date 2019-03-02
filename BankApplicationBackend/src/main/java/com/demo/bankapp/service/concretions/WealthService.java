@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.demo.bankapp.configuration.Constants;
 import com.demo.bankapp.exception.BadRequestException;
 import com.demo.bankapp.exception.InsufficientFundsException;
 import com.demo.bankapp.exception.UserNotFoundException;
@@ -56,7 +57,7 @@ public class WealthService implements IWealthService {
 		BigDecimal tryEquivalent = amount.divide(rate, 9, RoundingMode.HALF_UP);
 
 		if (isBuying) {
-			if (tryEquivalent.compareTo(wealthMap.get("TRY")) == 1) { // Trying to buy more than he can.
+			if (tryEquivalent.compareTo(wealthMap.get(Constants.MAIN_CURRENCY)) == 1) { // Trying to buy more than he can.
 				throw new InsufficientFundsException();
 			}
 		} else {
@@ -66,11 +67,11 @@ public class WealthService implements IWealthService {
 		}
 
 		if (isBuying) {
-			wealthMap.put("TRY", wealthMap.get("TRY").subtract(tryEquivalent));
+			wealthMap.put(Constants.MAIN_CURRENCY, wealthMap.get(Constants.MAIN_CURRENCY).subtract(tryEquivalent));
 			wealthMap.put(currency, wealthMap.get(currency).add(amount));
 		} else {
 			wealthMap.put(currency, wealthMap.get(currency).subtract(amount));
-			wealthMap.put("TRY", wealthMap.get("TRY").add(tryEquivalent));
+			wealthMap.put(Constants.MAIN_CURRENCY, wealthMap.get(Constants.MAIN_CURRENCY).add(tryEquivalent));
 		}
 
 		userWealth.setWealthMap(wealthMap);
@@ -84,7 +85,7 @@ public class WealthService implements IWealthService {
 		Map<String, BigDecimal> wealthMap = userWealth.getWealthMap();
 
 		if (!wealthMap.containsKey(currency)) {
-			throw new BadRequestException("Invalid currency.");
+			throw new BadRequestException(Constants.MESSAGE_INVALIDCURRENCY);
 		}
 
 		if (!isIncrementing) {
@@ -115,7 +116,7 @@ public class WealthService implements IWealthService {
 	}
 
 	private void addInitialBalance(Map<String, BigDecimal> wealthMap) {
-		String currency = "TRY";
+		String currency = Constants.MAIN_CURRENCY;
 
 		BigDecimal currentAmount = wealthMap.get(currency);
 		BigDecimal amountToAdd = new BigDecimal(130000);

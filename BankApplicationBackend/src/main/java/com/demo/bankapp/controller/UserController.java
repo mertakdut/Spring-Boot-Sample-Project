@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.demo.bankapp.configuration.Constants;
 import com.demo.bankapp.exception.BadCredentialsException;
 import com.demo.bankapp.exception.BadRequestException;
 import com.demo.bankapp.model.User;
@@ -45,22 +46,26 @@ public class UserController {
 	@PostMapping("/create")
 	public CreateUserResponse createUser(@RequestBody CreateUserRequest request) {
 
-		if (request.getUsername() == null || request.getUsername().equals("") || request.getPassword() == null || request.getPassword().equals("")) {
-			throw new BadRequestException("Invalid credentials.");
+		if (request.getUsername() == null || request.getUsername().equals("")) {
+			throw new BadRequestException(Constants.MESSAGE_INVALIDUSERNAME);
+		}
+		
+		if (request.getPassword() == null || request.getPassword().equals("")) {
+			throw new BadRequestException(Constants.MESSAGE_INVALIDPASSWORD);
 		}
 
-		if (request.getTcno() == null || request.getTcno().length() != 11 || !isNumeric(request.getTcno())) {
-			throw new BadRequestException("Invalid TC No.");
+		if (request.getTcno() == null || request.getTcno().length() != 11 || !Pattern.matches("[0-9]+", request.getTcno())) {
+			throw new BadRequestException(Constants.MESSAGE_INVALIDTCNO);
 		}
 
 		boolean isUsernameExist = userService.isUsernameExist(request.getUsername());
 		if (isUsernameExist) {
-			throw new BadCredentialsException("User with the same name exists.");
+			throw new BadCredentialsException(Constants.MESSAGE_SAMEUSERNAMEEXIST);
 		}
 
 		boolean isTcnoExist = userService.isTcnoExist(request.getTcno());
 		if (isTcnoExist) {
-			throw new BadCredentialsException("User with the same tc no exists.");
+			throw new BadCredentialsException(Constants.MESSAGE_SAMETCNOEXIST);
 		}
 
 		User user = userService.createNewUser(new User(request.getUsername(), request.getPassword(), request.getTcno()));
@@ -70,10 +75,6 @@ public class UserController {
 		response.setUsername(user.getUsername());
 		response.setTcno(user.getTcno());
 		return response;
-	}
-
-	private boolean isNumeric(String str) {
-		return Pattern.matches("[0-9]+", str);
 	}
 
 }
