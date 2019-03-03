@@ -101,7 +101,7 @@ public class TransferController {
 			tryEquivalent = transfer.getAmount().divide(rate, 9, RoundingMode.HALF_UP);
 
 			transferTryEquivalent = transferTryEquivalent.add(tryEquivalent);
-			if (transferTryEquivalent.compareTo(dailyTransferLimit) != -1) {
+			if (transferTryEquivalent.compareTo(dailyTransferLimit) == 1) {
 				throw new TransactionLimitException(Constants.MESSAGE_EXCEEDEDMAXVALUEFORDAY);
 			}
 		}

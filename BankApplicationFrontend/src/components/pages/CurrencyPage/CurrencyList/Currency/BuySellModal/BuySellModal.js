@@ -68,7 +68,7 @@ class BuySellModal extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     <InputGroup className="mb-3">
-                        <FormControl placeholder="Enter amount" onChange={this.onInputAmountChange} maxLength={6} />
+                        <FormControl placeholder="Enter amount" onChange={this.onInputAmountChange} maxLength={8} />
                         <InputGroup.Append>
                             <InputGroup.Text>
                                 <NumberFormat value={this.state.convertedAmount} displayType={'text'} thousandSeparator={true} prefix={this.props.isBuying ? '-' : '+'} suffix={'TL'} />
