@@ -1,0 +1,11 @@
+language: java
+jdk:
+- oraclejdk8
+before_install:
+  - chmod +x mvnw
+install:
+  - ./mvnw test-compile -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+script:
+  - ./mvnw test jacoco:report
+after_success:
+  - ./mvnw coveralls:report
