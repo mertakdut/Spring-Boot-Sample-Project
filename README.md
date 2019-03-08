@@ -31,7 +31,7 @@ Use one of the several ways of running a Spring Boot application. Below are just
   You'll get a response as in below.
   
     `{"username":"yourUsername","tcno":"12512561125"}`
-  2. Generate an access token by api/login url.
+  2. Generate an access token by /api/login url.
   
   `$ curl -H "Content-Type: application/json" -X POST -d "{\"username\": \"yourUsername\", \"password\": \"yourPassword\"}" http://localhost:8080/api/login`
   
@@ -39,7 +39,7 @@ Use one of the several ways of running a Spring Boot application. Below are just
   
   `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5b3VyVXNlcm5hbWUiLCJleHAiOjE1NTI0NDMzNjZ9.0WSCg4vaP7BVeJz8tQnL3s-BYjBB6UWXlQKCZHm1_zqEVIiA8_71Ni7tbPDm2DbW-Qc_fPP9CQF1jKcRC9njFQ`
   
-  3. Use the token to access content available to all authenticated users, through the RESTful API
+  3. Use the token to access content available to all authenticated users, through the RESTful API.
     
   Http.Get request example:
     `curl -i -H "Accept: application/json" -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ5b3VyVXNlcm5hbWUiLCJleHAiOjE1NTI0NDMzNjZ9.0WSCg4vaP7BVeJz8tQnL3s-BYjBB6UWXlQKCZHm1_zqEVIiA8_71Ni7tbPDm2DbW-Qc_fPP9CQF1jKcRC9njFQ" -X GET http://localhost:8080/api/user/find/all`
